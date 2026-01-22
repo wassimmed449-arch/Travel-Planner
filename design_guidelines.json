@@ -1,0 +1,130 @@
+{
+  "identity": {
+    "name": "E1 - The Anti-AI Designer",
+    "mission": "Create a soulful, mobile-first travel companion for Annaba that feels like a local friend (Wassim), not a database.",
+    "principles": [
+      "Fusion: Mix 'Travel Guide' utility with 'Personal Journal' intimacy.",
+      "Emotion First: Every screen must evoke the feeling of Annaba (Sea breeze, Forest calm, Warm hospitality).",
+      "Content is King: Wassim's voice is the UI. Tips are not metadata; they are conversation.",
+      "Zoom In: Big, immersive photos of food and landscapes. Don't hide Annaba behind tiny thumbnails.",
+      "Negative Space: Let the content breathe, especially on mobile."
+    ]
+  },
+  "tokens": {
+    "colors": {
+      "light": {
+        "background": "0 0% 98%",
+        "foreground": "201 100% 18%",
+        "card": "0 0% 100%",
+        "card-foreground": "201 100% 18%",
+        "primary": "201 100% 18%",
+        "primary-foreground": "0 0% 100%",
+        "secondary": "144 49% 20%",
+        "secondary-foreground": "0 0% 98%",
+        "accent": "34 54% 73%",
+        "accent-foreground": "201 100% 18%",
+        "muted": "210 40% 96.1%",
+        "muted-foreground": "215.4 16.3% 46.9%",
+        "border": "214.3 31.8% 91.4%"
+      },
+      "dark": {
+        "background": "200 50% 5%",
+        "foreground": "0 0% 98%",
+        "card": "200 50% 8%",
+        "card-foreground": "0 0% 98%",
+        "primary": "201 100% 60%",
+        "primary-foreground": "201 100% 10%",
+        "secondary": "144 49% 40%",
+        "secondary-foreground": "0 0% 98%",
+        "accent": "34 54% 73%",
+        "accent-foreground": "201 100% 18%",
+        "muted": "217.2 32.6% 17.5%",
+        "muted-foreground": "215 20.2% 65.1%",
+        "border": "217.2 32.6% 17.5%"
+      }
+    },
+    "typography": {
+      "font_family_arabic": "Tajawal, sans-serif",
+      "font_family_latin": "Outfit, sans-serif",
+      "headings": "font-bold tracking-tight",
+      "body": "font-normal leading-relaxed"
+    },
+    "radius": {
+      "default": "1rem",
+      "card": "1.5rem",
+      "button": "9999px"
+    }
+  },
+  "layout": {
+    "mobile_first": true,
+    "container": "max-w-md mx-auto min-h-screen bg-background relative overflow-hidden shadow-2xl",
+    "spacing": {
+      "page_padding": "px-6 py-8",
+      "section_gap": "gap-8",
+      "item_gap": "gap-4"
+    },
+    "grid": {
+      "mood_selector": "grid grid-cols-2 gap-4",
+      "featured": "flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 no-scrollbar"
+    }
+  },
+  "components": {
+    "bottom_nav": {
+      "style": "fixed bottom-0 left-0 right-0 h-20 bg-background/80 backdrop-blur-xl border-t border-border/40 flex justify-around items-center z-50 pb-2",
+      "item_active": "text-primary scale-110 transition-all duration-300",
+      "item_inactive": "text-muted-foreground hover:text-primary/70 transition-all duration-300"
+    },
+    "cards": {
+      "place_card": "group relative overflow-hidden rounded-3xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-all duration-300",
+      "glass_card": "bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-3xl"
+    },
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-full font-medium shadow-lg shadow-primary/20 transition-all active:scale-95",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/90 h-12 px-8 rounded-full font-medium shadow-lg shadow-secondary/20",
+      "ghost": "hover:bg-accent/10 hover:text-accent-foreground"
+    },
+    "badges": {
+      "wassim_pick": "absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10 rotate-3"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.pexels.com/photos/35571563/pexels-photo-35571563.jpeg",
+      "forest_bg": "https://images.pexels.com/photos/28447700/pexels-photo-28447700.jpeg",
+      "city_bg": "https://images.pexels.com/photos/35751061/pexels-photo-35751061.jpeg",
+      "food_bg": "https://images.pexels.com/photos/28447699/pexels-photo-28447699.jpeg"
+    },
+    "icons": "Lucide React (Use specific icons: Compass for Explore, MapPin for Nearby, Heart for Plans, MessageCircle for Bot, ShieldAlert for SOS)"
+  },
+  "features": {
+    "rtl_support": {
+      "instruction": "Use logical properties (ms-*, me-*, ps-*, pe-*) instead of physical (ml-*, mr-*, pl-*, pr-*). Ensure 'dir' attribute toggles on the root element.",
+      "icons": "Flip directional icons (arrows, chevrons) using 'rtl:rotate-180' class."
+    },
+    "winter_mode": {
+      "instruction": "Toggle 'dark' class on html element. In dark mode, emphasize the 'Forest Green' secondary color to give a cozy cabin vibe.",
+      "visuals": "Add a subtle snow grain overlay in CSS if possible."
+    },
+    "wassim_bot": {
+      "ui": "Chat interface must feel like WhatsApp/Telegram. Bubbles should be rounded-2xl with 'rounded-tr-none' for user and 'rounded-tl-none' for bot (mirrored in RTL)."
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Install 'lucide-react', 'framer-motion', 'clsx', 'tailwind-merge' if not present.",
+    "2. THEME: Update 'index.css' with the HSL values provided in 'tokens'.",
+    "3. FONTS: Import 'Tajawal' and 'Outfit' from Google Fonts in 'index.css'.",
+    "4. LAYOUT: Create a 'Layout' component that handles the Mobile Container, Bottom Nav, and RTL direction.",
+    "5. PAGES: Build 'Home', 'Explore', 'Plans', 'SOS', 'PlaceDetail' pages.",
+    "6. DATA: Create a 'data.js' file to mock the PDF content (Places, Itineraries, Wassim's Tips).",
+    "7. STATE: Use React Context for 'ThemeContext' (Winter Mode) and 'LanguageContext' (Arabic/French).",
+    "8. MAP: Use 'react-leaflet' for the Nearby map. If too complex, mock with a static image first.",
+    "9. ANIMATION: Use 'framer-motion' for page transitions (Slide Left/Right) and card entrances (Fade Up).",
+    "10. TESTING: Add 'data-testid' to all interactive elements."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients for text.",
+    "Avoid generic 'Bootstrap' column layouts. Use the 'Bento' grid for dashboards/menus.",
+    "Ensure touch targets are at least 44x44px.",
+    "Always handle empty states (e.g., no saved stories) with a friendly illustration/message."
+  ]
+}
