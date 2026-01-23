@@ -11,14 +11,15 @@ Build a high-end, Mobile-First Progressive Web App (PWA) called "Travel Planner 
 
 ---
 
-## FINAL RELEASE - V3.0 COMPLETE ✅
+## FINAL RELEASE - V3.0.1 COMPLETE ✅ (January 2026)
 
-### 1. REAL MAP COORDINATES ✅
-Updated `v3EnhancedData.js` with authentic Annaba coordinates:
-- **Sheraton/Sabri Area**: `[36.935, 7.765]`
-- **Seraidi (Mount Edough)**: `[36.915, 7.665]`
-- **City Center (Cours de la Révolution)**: `[36.900, 7.760]`
-- **Beaches (Djenen El Bey)**: `[36.985, 7.625]`
+### 1. REAL MAP COORDINATES ✅ (EXACT VALUES - VERIFIED)
+Updated `v3EnhancedData.js` and `placesData.js` with user-provided exact coordinates:
+- **Sheraton Annaba**: `[36.9325, 7.7658]`
+- **Seraidi (Hotel El Mountazah)**: `[36.9147, 7.6622]`
+- **City Center (Cours de la Révolution)**: `[36.9006, 7.7600]`
+- **Plage Djenen El Bey**: `[36.9850, 7.6250]`
+- **Plage Ain Achir**: `[36.9533, 7.7333]`
 
 ### 2. PDF DOWNLOAD - REAL LINK ✅
 - **Google Drive URL**: `https://drive.google.com/file/d/1U8hRtWBynaIeir_IbxUAXIB6yz2B1pr1/view?usp=sharing`
@@ -34,10 +35,25 @@ Full knowledge base injected from PDF:
 - **Emergency**: Hospital numbers, police, civil protection
 - **Persona**: "Wassim's AI Assistant" - helpful, friendly, emoji-rich
 
-### 4. VIP SUPPORT WHATSAPP BUTTON ✅
+### 4. VIP SUPPORT WHATSAPP BUTTON ✅ (LINK FIXED)
 - **Gold Button**: "⭐ تواصل مع وسيم (دعم VIP)"
-- **WhatsApp Link**: `https://wa.me/213552664037?text=Hello Wassim, I am a Premium VIP user and I need assistance.`
+- **WhatsApp Link**: `https://wa.me/213552664037` (clean format, no message prefix)
 - Prominent placement in Premium Dashboard
+
+### 5. SCAN & GO LINKS ✅ (REAL URLS FROM PDF)
+All links extracted from v3CompleteData.js with real external URLs:
+- 🏖️ Best Beach: `https://www.instagram.com/p/DOVolVGiovv/`
+- 🍽️ Restaurant Experience: `https://www.instagram.com/p/DOi24nMCpXt/`
+- ⭐ Trip Rating: `https://www.instagram.com/p/DOVo7BkCsxU/`
+- 📖 Book Review: `https://www.instagram.com/p/DOi2masCg4r/`
+- 📝 Quick Survey: Google Forms link
+- 🗺️ Wassim's Map: Google Maps link
+- WhatsApp Direct: `https://wa.me/213552664037`
+
+### 6. INSTAGRAM HASHTAG EXPLORER ✅ (LINK FORMAT FIXED)
+- All hashtag buttons now open correct URL format
+- Format: `https://www.instagram.com/explore/tags/{hashtag}/`
+- Opens in new tab with `noopener,noreferrer`
 
 ---
 
@@ -70,14 +86,17 @@ Full knowledge base injected from PDF:
 
 ---
 
-## Testing Status
-- ✅ Real map coordinates displaying correctly
+## Testing Status (January 2026 - All Verified)
+- ✅ Real map coordinates displaying correctly (5 exact locations verified)
 - ✅ PDF download link working
 - ✅ Super-Bot responses enhanced with full knowledge
-- ✅ VIP Support gold button visible for premium users
+- ✅ VIP Support gold button visible for premium users (WhatsApp link fixed)
 - ✅ Magic Link activation working
 - ✅ Scroll to top on navigation
 - ✅ All lint checks passed
+- ✅ Scan & Go links open correct external URLs
+- ✅ Instagram hashtag links use correct format
+- ✅ 100% frontend test pass rate (iteration_2.json)
 
 ---
 
