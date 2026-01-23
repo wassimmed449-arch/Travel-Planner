@@ -8,12 +8,17 @@ import ExplorePage from "@/pages/ExplorePage";
 import PlansPage from "@/pages/PlansPage";
 import SOSPage from "@/pages/SOSPage";
 import PlaceDetailPage from "@/pages/PlaceDetailPage";
-import BotPage from "@/pages/BotPage";
 import MapPage from "@/pages/MapPage";
 import TransportCalculatorPage from "@/pages/TransportCalculatorPage";
 import PlanDetailPage from "@/pages/PlanDetailPage";
 import AboutPage from "@/pages/AboutPage";
 import StoriesPage from "@/pages/StoriesPage";
+
+// V3.0 NEW PAGES
+import ShopPage from "@/pages/ShopPage";
+import DualBotPage from "@/pages/DualBotPage";
+import FoodRoulettePage from "@/pages/FoodRoulettePage";
+import BonePassportPage from "@/pages/BonePassportPage";
 
 function App() {
   return (
@@ -27,12 +32,17 @@ function App() {
               <Route path="plans" element={<PlansPage />} />
               <Route path="sos" element={<SOSPage />} />
               <Route path="place/:id" element={<PlaceDetailPage />} />
-              <Route path="bot" element={<BotPage />} />
               <Route path="map" element={<MapPage />} />
               <Route path="transport-calculator" element={<TransportCalculatorPage />} />
               <Route path="plan/:id" element={<PlanDetailPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="stories" element={<StoriesPage />} />
+              
+              {/* V3.0 NEW ROUTES */}
+              <Route path="shop" element={<ShopPage />} />
+              <Route path="bot" element={<DualBotPage />} />
+              <Route path="food-roulette" element={<FoodRoulettePage />} />
+              <Route path="passport" element={<BonePassportPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
