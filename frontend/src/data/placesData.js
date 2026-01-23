@@ -937,10 +937,10 @@ export const allPlaces = [
 
 // Mood categories for filtering
 export const moodCategories = [
-  { id: 'quiet', icon: '🧘', name: { ar: 'هادئ', fr: 'Calme' } },
-  { id: 'family', icon: '👨‍👩‍👧', name: { ar: 'عائلي', fr: 'Familial' } },
-  { id: 'photo', icon: '📸', name: { ar: 'تصوير', fr: 'Photo' } },
-  { id: 'adventure', icon: '🔥', name: { ar: 'مغامرة', fr: 'Aventure' } }
+  { id: 'quiet', icon: '🧘', name: { ar: 'هادئ', fr: 'Calme', en: 'Quiet' } },
+  { id: 'family', icon: '👨‍👩‍👧', name: { ar: 'عائلي', fr: 'Familial', en: 'Family' } },
+  { id: 'photo', icon: '📸', name: { ar: 'تصوير', fr: 'Photo', en: 'Photo' } },
+  { id: 'adventure', icon: '🔥', name: { ar: 'مغامرة', fr: 'Aventure', en: 'Adventure' } }
 ];
 
 // Search helper function
