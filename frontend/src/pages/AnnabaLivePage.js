@@ -74,23 +74,26 @@ const initialMockPosts = [
 const AnnabaLivePage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [posts, setPosts] = useState([]);
+  
+  // Use lazy initialization to load from localStorage
+  const [posts, setPosts] = useState(() => {
+    try {
+      const savedPosts = localStorage.getItem(POSTS_STORAGE_KEY);
+      if (savedPosts) {
+        return JSON.parse(savedPosts);
+      }
+      // Initialize with mock posts and save to localStorage
+      localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(initialMockPosts));
+      return initialMockPosts;
+    } catch {
+      return initialMockPosts;
+    }
+  });
+  
   const [showNewPostModal, setShowNewPostModal] = useState(false);
   const [newPost, setNewPost] = useState({ caption: '', location: '', image: null });
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
-
-  // Load posts from LocalStorage on mount
-  useEffect(() => {
-    const savedPosts = localStorage.getItem(POSTS_STORAGE_KEY);
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    } else {
-      // Initialize with mock posts
-      setPosts(initialMockPosts);
-      localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(initialMockPosts));
-    }
-  }, []);
 
   // Save posts to LocalStorage whenever they change
   const savePosts = (newPosts) => {
