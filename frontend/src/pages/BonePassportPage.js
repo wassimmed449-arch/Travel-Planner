@@ -8,9 +8,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 const BonePassportPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [checkedIn, setCheckedIn] = useState([]);
-  const [totalStamps, setTotalStamps] = useState(0);
-  const [level, setLevel] = useState(1);
+  
+  // Use lazy initialization
+  const [checkedIn, setCheckedIn] = useState(() => {
+    try {
+      const saved = localStorage.getItem('bone_passport_checkins');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  
+  const [totalStamps, setTotalStamps] = useState(() => {
+    try {
+      const saved = localStorage.getItem('bone_passport_checkins');
+      return saved ? JSON.parse(saved).length : 0;
+    } catch {
+      return 0;
+    }
+  });
+  
+  const [level, setLevel] = useState(() => {
+    try {
+      const saved = localStorage.getItem('bone_passport_checkins');
+      const stamps = saved ? JSON.parse(saved).length : 0;
+      if (stamps < 5) return 1;
+      if (stamps < 10) return 2;
+      if (stamps < 20) return 3;
+      if (stamps < 30) return 4;
+      return 5;
+    } catch {
+      return 1;
+    }
+  });
+  
   const [showCelebration, setShowCelebration] = useState(false);
 
   const calculateLevel = useCallback((stamps) => {
@@ -20,17 +51,6 @@ const BonePassportPage = () => {
     else if (stamps < 30) setLevel(4);
     else setLevel(5);
   }, []);
-
-  useEffect(() => {
-    // Load from localStorage
-    const saved = localStorage.getItem('bone_passport_checkins');
-    if (saved) {
-      const data = JSON.parse(saved);
-      setCheckedIn(data);
-      setTotalStamps(data.length);
-      calculateLevel(data.length);
-    }
-  }, [calculateLevel]);
 
   const getLevelInfo = () => {
     const levels = {
