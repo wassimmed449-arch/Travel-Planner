@@ -10,11 +10,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 const DualBotPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
   const messagesEndRef = useRef(null);
+  
+  // Use lazy initialization for premium status
+  const [isPremium] = useState(() => PremiumManager.isPremiumActive());
 
   // FREE BOT - Formal, helpful, factual
   const getFreeBotGreeting = useCallback(() => {
@@ -33,20 +34,28 @@ const DualBotPage = () => {
       ? 'Salut! 😎 Je suis Wassim Super-Bot! 🚀 Prêt à t\'aider à trouver les meilleurs endroits d\'Annaba de façon fun avec mes conseils persos! 🔥 Dis-moi ce que tu veux? Pizza 🍕 ou plage 🏖️ ou aventure? 💪'
       : 'Hey! 😎 I\'m Wassim Super-Bot! 🚀 Ready to help you find the best spots in Annaba in a fun way with my personal tips! 🔥 Tell me what you want? Pizza 🍕 or beach 🏖️ or adventure? 💪';
   }, [language]);
-
-  useEffect(() => {
+  
+  // Use lazy initialization for messages with initial greeting
+  const [messages, setMessages] = useState(() => {
     const premiumStatus = PremiumManager.isPremiumActive();
-    setIsPremium(premiumStatus);
+    const greeting = premiumStatus ? (language === 'ar' 
+      ? 'يا هلا! 😎 أنا وسيم السوبر بوت! 🚀 جاهز نساعدك تلقى أحلى الأماكن في عنابة بطريقة مرحة ومع نصايح خاصة مني! 🔥 قولي شنو تحب؟ بيتزا 🍕 ولا شاطئ 🏖️ ولا مغامرة؟ 💪' 
+      : language === 'fr' 
+      ? 'Salut! 😎 Je suis Wassim Super-Bot! 🚀 Prêt à t\'aider à trouver les meilleurs endroits d\'Annaba de façon fun avec mes conseils persos! 🔥 Dis-moi ce que tu veux? Pizza 🍕 ou plage 🏖️ ou aventure? 💪'
+      : 'Hey! 😎 I\'m Wassim Super-Bot! 🚀 Ready to help you find the best spots in Annaba in a fun way with my personal tips! 🔥 Tell me what you want? Pizza 🍕 or beach 🏖️ or adventure? 💪')
+    : (language === 'ar' 
+      ? 'مرحباً بك. أنا المساعد الآلي لدليل عنابة. يمكنني مساعدتك في العثور على الأماكن والإجابة على الأسئلة الأساسية. جرب السؤال عن "فنادق" أو "مطاعم".' 
+      : language === 'fr' 
+      ? 'Bonjour. Je suis l\'assistant automatique du guide d\'Annaba. Je peux vous aider à trouver des lieux et répondre aux questions de base. Essayez de demander "hôtels" ou "restaurants".'
+      : 'Hello. I am the automated assistant for the Annaba guide. I can help you find places and answer basic questions. Try asking about "hotels" or "restaurants".');
     
-    // Initial greeting based on premium status
-    const greeting = premiumStatus ? getWassimSuperBotGreeting() : getFreeBotGreeting();
-    setMessages([{
+    return [{
       id: 1,
       sender: 'bot',
       text: greeting,
       type: premiumStatus ? 'super' : 'free'
-    }]);
-  }, [language, getWassimSuperBotGreeting, getFreeBotGreeting]);
+    }];
+  });
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
