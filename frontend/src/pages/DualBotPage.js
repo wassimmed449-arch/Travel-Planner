@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Crown, Sparkles, Lock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -16,18 +16,37 @@ const DualBotPage = () => {
   const [isPremium, setIsPremium] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // FREE BOT - Formal, helpful, factual
+  const getFreeBotGreeting = useCallback(() => {
+    return language === 'ar' 
+      ? 'مرحباً بك. أنا المساعد الآلي لدليل عنابة. يمكنني مساعدتك في العثور على الأماكن والإجابة على الأسئلة الأساسية. جرب السؤال عن "فنادق" أو "مطاعم".' 
+      : language === 'fr' 
+      ? 'Bonjour. Je suis l\'assistant automatique du guide d\'Annaba. Je peux vous aider à trouver des lieux et répondre aux questions de base. Essayez de demander "hôtels" ou "restaurants".'
+      : 'Hello. I am the automated assistant for the Annaba guide. I can help you find places and answer basic questions. Try asking about "hotels" or "restaurants".';
+  }, [language]);
+
+  // WASSIM SUPER-BOT - Youthful, funny, emoji-heavy
+  const getWassimSuperBotGreeting = useCallback(() => {
+    return language === 'ar' 
+      ? 'يا هلا! 😎 أنا وسيم السوبر بوت! 🚀 جاهز نساعدك تلقى أحلى الأماكن في عنابة بطريقة مرحة ومع نصايح خاصة مني! 🔥 قولي شنو تحب؟ بيتزا 🍕 ولا شاطئ 🏖️ ولا مغامرة؟ 💪' 
+      : language === 'fr' 
+      ? 'Salut! 😎 Je suis Wassim Super-Bot! 🚀 Prêt à t\'aider à trouver les meilleurs endroits d\'Annaba de façon fun avec mes conseils persos! 🔥 Dis-moi ce que tu veux? Pizza 🍕 ou plage 🏖️ ou aventure? 💪'
+      : 'Hey! 😎 I\'m Wassim Super-Bot! 🚀 Ready to help you find the best spots in Annaba in a fun way with my personal tips! 🔥 Tell me what you want? Pizza 🍕 or beach 🏖️ or adventure? 💪';
+  }, [language]);
+
   useEffect(() => {
-    setIsPremium(PremiumManager.isPremiumActive());
+    const premiumStatus = PremiumManager.isPremiumActive();
+    setIsPremium(premiumStatus);
     
     // Initial greeting based on premium status
-    const greeting = isPremium ? getWassimSuperBotGreeting() : getFreeBotGreeting();
+    const greeting = premiumStatus ? getWassimSuperBotGreeting() : getFreeBotGreeting();
     setMessages([{
       id: 1,
       sender: 'bot',
       text: greeting,
-      type: isPremium ? 'super' : 'free'
+      type: premiumStatus ? 'super' : 'free'
     }]);
-  }, [language]);
+  }, [language, getWassimSuperBotGreeting, getFreeBotGreeting]);
 
   useEffect(() => {
     scrollToBottom();
@@ -35,24 +54,6 @@ const DualBotPage = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // FREE BOT - Formal, helpful, factual
-  const getFreeBotGreeting = () => {
-    return language === 'ar' 
-      ? 'مرحباً بك. أنا المساعد الآلي لدليل عنابة. يمكنني مساعدتك في العثور على الأماكن والإجابة على الأسئلة الأساسية. جرب السؤال عن "فنادق" أو "مطاعم".' 
-      : language === 'fr' 
-      ? 'Bonjour. Je suis l\'assistant automatique du guide d\'Annaba. Je peux vous aider à trouver des lieux et répondre aux questions de base. Essayez de demander "hôtels" ou "restaurants".'
-      : 'Hello. I am the automated assistant for the Annaba guide. I can help you find places and answer basic questions. Try asking about "hotels" or "restaurants".';
-  };
-
-  // WASSIM SUPER-BOT - Youthful, funny, emoji-heavy
-  const getWassimSuperBotGreeting = () => {
-    return language === 'ar' 
-      ? 'يا هلا! 😎 أنا وسيم السوبر بوت! 🚀 جاهز نساعدك تلقى أحلى الأماكن في عنابة بطريقة مرحة ومع نصايح خاصة مني! 🔥 قولي شنو تحب؟ بيتزا 🍕 ولا شاطئ 🏖️ ولا مغامرة؟ 💪' 
-      : language === 'fr' 
-      ? 'Salut! 😎 Je suis Wassim Super-Bot! 🚀 Prêt à t\'aider à trouver les meilleurs endroits d\'Annaba de façon fun avec mes conseils persos! 🔥 Dis-moi ce que tu veux? Pizza 🍕 ou plage 🏖️ ou aventure? 💪'
-      : 'Hey! 😎 I\'m Wassim Super-Bot! 🚀 Ready to help you find the best spots in Annaba in a fun way with my personal tips! 🔥 Tell me what you want? Pizza 🍕 or beach 🏖️ or adventure? 💪';
   };
 
   const getFreeBotResponse = (query) => {
