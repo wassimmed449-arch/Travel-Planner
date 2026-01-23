@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, MapPin, Book } from 'lucide-react';
+import { ArrowLeft, MapPin, Book } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { wassimProfile, allPlaces } from '../data/placesData';
 import { motion } from 'framer-motion';
@@ -36,7 +36,7 @@ const AboutPage = () => {
                 {t(wassimProfile.name)}
               </h1>
               <p className="text-white/90">
-                {language === 'ar' ? 'مؤلف الدليل' : 'Auteur du Guide'}
+                {language === 'ar' ? 'مؤلف الدليل' : language === 'fr' ? 'Auteur du Guide' : 'Guide Author'}
               </p>
             </div>
           </div>
@@ -44,6 +44,7 @@ const AboutPage = () => {
       </div>
 
       <div className="px-6 py-8 space-y-8">
+        {/* Bio Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -51,32 +52,18 @@ const AboutPage = () => {
         >
           <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
             <Book className="w-6 h-6 text-primary" />
-            {language === 'ar' ? 'عن وسيم' : 'À Propos de Wassim'}
+            {language === 'ar' ? 'عن وسيم' : language === 'fr' ? 'À Propos de Wassim' : 'About Wassim'}
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             {t(wassimProfile.bio)}
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-secondary/20 to-secondary/10 border-2 border-secondary/50 rounded-3xl p-6"
-        >
-          <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
-            <Heart className="w-6 h-6 text-secondary" />
-            {language === 'ar' ? 'مقولة وسيم المفضلة' : 'Citation Préférée de Wassim'}
-          </h2>
-          <p className="text-foreground leading-relaxed italic">
-            "{t(wassimProfile.quote)}"
-          </p>
-        </motion.div>
-
+        {/* Favorite Places */}
         <div>
           <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
             <MapPin className="w-6 h-6 text-primary" />
-            {language === 'ar' ? 'أماكن وسيم المفضلة' : 'Lieux Préférés de Wassim'}
+            {language === 'ar' ? 'أماكن وسيم المفضلة' : language === 'fr' ? 'Lieux Préférés de Wassim' : 'Wassim\'s Favorite Places'}
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
@@ -110,14 +97,17 @@ const AboutPage = () => {
           </div>
         </div>
 
+        {/* Thank You Section */}
         <div className="bg-accent/20 border-2 border-accent/50 rounded-3xl p-6 text-center">
           <h3 className="font-bold text-lg mb-2">
-            {language === 'ar' ? '🙏 شكراً لاستخدامك هذا الدليل' : '🙏 Merci d\'Utiliser ce Guide'}
+            {language === 'ar' ? '🙏 شكراً لاستخدامك هذا الدليل' : language === 'fr' ? '🙏 Merci d\'Utiliser ce Guide' : '🙏 Thank You for Using This Guide'}
           </h3>
           <p className="text-sm text-muted-foreground">
             {language === 'ar' 
               ? 'آمل أن يكون هذا الدليل إضافة مفيدة وممتعة لرحلتك. استمتع بعنابة!' 
-              : 'J\'espère que ce guide sera un ajout utile et agréable à votre voyage. Profitez d\'Annaba !'}
+              : language === 'fr'
+              ? 'J\'espère que ce guide sera un ajout utile et agréable à votre voyage. Profitez d\'Annaba !'
+              : 'I hope this guide will be a useful and enjoyable addition to your trip. Enjoy Annaba!'}
           </p>
           <p className="mt-3 font-bold text-primary">
             - {t(wassimProfile.name)}
@@ -129,7 +119,7 @@ const AboutPage = () => {
           data-testid="explore-all-button"
           className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold hover:shadow-lg transition-all"
         >
-          {language === 'ar' ? 'استكشف جميع الأماكن' : 'Explorer Tous les Lieux'}
+          {language === 'ar' ? 'استكشف جميع الأماكن' : language === 'fr' ? 'Explorer Tous les Lieux' : 'Explore All Places'}
         </button>
       </div>
     </div>

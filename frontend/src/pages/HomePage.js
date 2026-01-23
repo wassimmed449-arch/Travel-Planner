@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils, Volume2, Camera } from 'lucide-react';
+import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils, Instagram, QrCode, Building2, Car } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { allPlaces, moodCategories, getWinterRecommendations } from '../data/placesData';
@@ -59,7 +59,7 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl font-bold mb-2"
           >
-            {language === 'ar' ? 'عنابة' : language === 'fr' ? 'Annaba' : 'Annaba'}
+            {language === 'ar' ? 'عنابة' : 'Annaba'}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -153,7 +153,7 @@ const HomePage = () => {
           </motion.div>
         )}
 
-        {/* V3.0 NEW FEATURES */}
+        {/* V3.0 Features Row 1 */}
         <div className="grid grid-cols-2 gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -180,33 +180,34 @@ const HomePage = () => {
           </motion.button>
         </div>
 
-        {/* PHASE 2 FEATURES */}
+        {/* V3.0 Features Row 2 */}
         <div className="grid grid-cols-2 gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/soundscapes')}
-            data-testid="soundscapes-button"
-            className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
+            onClick={() => navigate('/instagram')}
+            data-testid="instagram-button"
+            className="bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#F77737] text-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
           >
-            <Volume2 className="w-8 h-8 mb-2 mx-auto" />
+            <Instagram className="w-8 h-8 mb-2 mx-auto" />
             <p className="font-bold text-sm">
-              {language === 'ar' ? 'أصوات عنابة 🎧' : language === 'fr' ? 'Sons d\'Annaba 🎧' : 'Soundscapes 🎧'}
+              {language === 'ar' ? 'انستغرام عنابة' : language === 'fr' ? 'Instagram Annaba' : 'Annaba Instagram'}
             </p>
           </motion.button>
 
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/annaba-live')}
-            data-testid="annaba-live-button"
-            className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
+            onClick={() => navigate('/scan-and-go')}
+            data-testid="scan-go-button"
+            className="bg-black border-2 border-green-500 text-green-400 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
           >
-            <Camera className="w-8 h-8 mb-2 mx-auto" />
-            <p className="font-bold text-sm">
-              {language === 'ar' ? 'عنابة لايف 📸' : language === 'fr' ? 'Annaba Live 📸' : 'Annaba Live 📸'}
+            <QrCode className="w-8 h-8 mb-2 mx-auto" />
+            <p className="font-bold text-sm font-mono">
+              {language === 'ar' ? 'Scan & Go' : 'Scan & Go'}
             </p>
           </motion.button>
         </div>
 
+        {/* Featured Places */}
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold">
@@ -248,6 +249,7 @@ const HomePage = () => {
           </div>
         </div>
 
+        {/* Quick Links */}
         <div className="grid grid-cols-2 gap-4">
           <button 
             onClick={() => navigate('/plans')}
@@ -278,6 +280,38 @@ const HomePage = () => {
           </button>
         </div>
 
+        {/* Services & Transport */}
+        <div className="grid grid-cols-2 gap-4">
+          <button 
+            onClick={() => navigate('/services')}
+            data-testid="services-button"
+            className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl p-4 text-start"
+          >
+            <Building2 className="w-6 h-6 mb-2" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'وكالات ونوادي' : language === 'fr' ? 'Agences & Clubs' : 'Agencies & Clubs'}
+            </p>
+            <p className="text-xs opacity-80">
+              {language === 'ar' ? 'سياحة وترفيه' : language === 'fr' ? 'Tourisme & Loisirs' : 'Tourism & Recreation'}
+            </p>
+          </button>
+
+          <button 
+            onClick={() => navigate('/transport-calculator')}
+            data-testid="taxi-button"
+            className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-black rounded-2xl p-4 text-start"
+          >
+            <Car className="w-6 h-6 mb-2" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'دليل التاكسي' : language === 'fr' ? 'Guide Taxi' : 'Taxi Guide'}
+            </p>
+            <p className="text-xs opacity-80">
+              {language === 'ar' ? 'الأسعار التقريبية' : language === 'fr' ? 'Prix estimés' : 'Estimated prices'}
+            </p>
+          </button>
+        </div>
+
+        {/* About Wassim */}
         <div 
           onClick={() => navigate('/about')}
           data-testid="about-wassim"
