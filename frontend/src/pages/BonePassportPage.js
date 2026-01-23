@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Award, MapPin, Calendar, Trophy, Target } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -13,6 +13,14 @@ const BonePassportPage = () => {
   const [level, setLevel] = useState(1);
   const [showCelebration, setShowCelebration] = useState(false);
 
+  const calculateLevel = useCallback((stamps) => {
+    if (stamps < 5) setLevel(1);
+    else if (stamps < 10) setLevel(2);
+    else if (stamps < 20) setLevel(3);
+    else if (stamps < 30) setLevel(4);
+    else setLevel(5);
+  }, []);
+
   useEffect(() => {
     // Load from localStorage
     const saved = localStorage.getItem('bone_passport_checkins');
@@ -22,15 +30,7 @@ const BonePassportPage = () => {
       setTotalStamps(data.length);
       calculateLevel(data.length);
     }
-  }, []);
-
-  const calculateLevel = (stamps) => {
-    if (stamps < 5) setLevel(1);
-    else if (stamps < 10) setLevel(2);
-    else if (stamps < 20) setLevel(3);
-    else if (stamps < 30) setLevel(4);
-    else setLevel(5);
-  };
+  }, [calculateLevel]);
 
   const getLevelInfo = () => {
     const levels = {
