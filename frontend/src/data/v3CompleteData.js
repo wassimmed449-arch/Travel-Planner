@@ -184,7 +184,3 @@ export const scanAndGoLinks = [
   }
 ];
 
-// Continue in next file due to length limit...
-
-// ==================== WASSIM AUTHOR INFO ====================
-
