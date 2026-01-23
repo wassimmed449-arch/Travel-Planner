@@ -176,9 +176,6 @@ export const PremiumManager = {
         fr: 'Histoire complète de la ville et lieux cachés inconnus des touristes', 
         en: 'Full city history and hidden spots tourists don\'t know' 
       }
-    }, 
-        en: 'Discounts at partner restaurants and hotels' 
-      }
     },
     {
       id: 'hidden-gems',
