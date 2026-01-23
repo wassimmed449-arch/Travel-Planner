@@ -117,18 +117,19 @@ export const PremiumManager = {
   // Premium features list
   getFeaturesList: () => [
     {
-      id: 'wassim-super-bot',
-      icon: '🚀',
-      premiumOnly: true,
+      id: 'smart-map',
+      icon: '🗺️',
+      premiumOnly: false,
+      highlight: true,
       name: { 
-        ar: 'بوت وسيم الخارق', 
-        fr: 'Wassim Super-Bot', 
-        en: 'Wassim Super-Bot' 
+        ar: 'الخريطة الذكية التفاعلية', 
+        fr: 'Carte Interactive Intelligente', 
+        en: 'Smart Interactive Map' 
       },
       description: { 
-        ar: 'نصائح شخصية بأسلوب وسيم الشبابي المرح 😎', 
-        fr: 'Conseils personnels dans le style jeune et amusant de Wassim 😎', 
-        en: 'Personal tips in Wassim\'s youthful and fun style 😎' 
+        ar: 'تنقل سهل مع دبابيس وتوجيهات Google Maps', 
+        fr: 'Navigation facile avec pins et directions Google Maps', 
+        en: 'Easy navigation with pins and Google Maps directions' 
       }
     },
     {
@@ -137,27 +138,45 @@ export const PremiumManager = {
       premiumOnly: true,
       name: { 
         ar: 'تحميل الكتاب الكامل PDF', 
-        fr: 'Télécharger le livre complet PDF', 
-        en: 'Download Complete Book PDF' 
+        fr: 'Télécharger le Livre Complet PDF', 
+        en: 'Full PDF Guidebook Download' 
       },
       description: { 
-        ar: 'دليل السفر الكامل بصيغة PDF', 
-        fr: 'Guide de voyage complet en format PDF', 
-        en: 'Complete travel guide in PDF format' 
+        ar: 'دليل السفر الكامل V3 بصيغة PDF للقراءة أوفلاين', 
+        fr: 'Guide de voyage complet V3 en PDF pour lecture hors-ligne', 
+        en: 'Complete V3 travel guide in PDF for offline reading' 
       }
     },
     {
-      id: 'exclusive-deals',
-      icon: '🎁',
+      id: 'wassim-super-bot',
+      icon: '🤖',
       premiumOnly: true,
       name: { 
-        ar: 'عروض حصرية', 
-        fr: 'Offres exclusives', 
-        en: 'Exclusive Deals' 
+        ar: 'بوت وسيم الخارق', 
+        fr: 'Wassim Super-Bot', 
+        en: 'Wassim Super-Bot (Personal Assistant)' 
       },
       description: { 
-        ar: 'خصومات في المطاعم والفنادق الشريكة', 
-        fr: 'Réductions dans restaurants et hôtels partenaires', 
+        ar: 'مساعد شخصي بأسلوب وسيم الشبابي المرح مع إيموجي ونصائح سرية 😎', 
+        fr: 'Assistant personnel dans le style jeune et amusant de Wassim avec emojis et conseils secrets 😎', 
+        en: 'Personal assistant in Wassim\'s youthful fun style with emojis and secret tips 😎' 
+      }
+    },
+    {
+      id: 'deep-secrets',
+      icon: '🔮',
+      premiumOnly: true,
+      name: { 
+        ar: 'أسرار محلية عميقة', 
+        fr: 'Secrets Locaux Profonds', 
+        en: 'Deep Local Secrets' 
+      },
+      description: { 
+        ar: 'تاريخ المدينة الكامل والأماكن المخفية التي لا يعرفها السياح', 
+        fr: 'Histoire complète de la ville et lieux cachés inconnus des touristes', 
+        en: 'Full city history and hidden spots tourists don\'t know' 
+      }
+    }, 
         en: 'Discounts at partner restaurants and hotels' 
       }
     },
