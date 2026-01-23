@@ -22,6 +22,8 @@ import BonePassportPage from "@/pages/BonePassportPage";
 import InstagramExplorerPage from "@/pages/InstagramExplorerPage";
 import ScanAndGoPage from "@/pages/ScanAndGoPage";
 import ServicesPage from "@/pages/ServicesPage";
+import HistoryPage from "@/pages/HistoryPage";
+import IntroductionPage from "@/pages/IntroductionPage";
 
 function App() {
   return (
@@ -49,6 +51,8 @@ function App() {
               <Route path="instagram" element={<InstagramExplorerPage />} />
               <Route path="scan-and-go" element={<ScanAndGoPage />} />
               <Route path="services" element={<ServicesPage />} />
+              <Route path="history" element={<HistoryPage />} />
+              <Route path="introduction" element={<IntroductionPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
