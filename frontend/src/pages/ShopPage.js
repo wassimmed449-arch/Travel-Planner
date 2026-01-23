@@ -46,12 +46,14 @@ const ShopPage = () => {
   };
 
   const handleDownloadPDF = () => {
-    // In production, this would trigger actual PDF download
-    alert(t({
-      ar: 'سيتم تحميل الكتاب قريباً...',
-      fr: 'Le livre sera téléchargé bientôt...',
-      en: 'Book will be downloaded soon...'
-    }));
+    // Open the REAL Google Drive PDF link
+    window.open('https://drive.google.com/file/d/1U8hRtWBynaIeir_IbxUAXIB6yz2B1pr1/view?usp=sharing', '_blank');
+  };
+
+  const handleVIPSupport = () => {
+    // Open WhatsApp VIP support link
+    const message = encodeURIComponent('Hello Wassim, I am a Premium VIP user and I need assistance.');
+    window.open(`https://wa.me/213552664037?text=${message}`, '_blank');
   };
 
   return (
