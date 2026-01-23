@@ -436,4 +436,7 @@ export const v3Data = {
   recreationalClubs
 };
 
+// Re-export imported items for convenience
+export { completeTexts, wassimAuthor, scanAndGoLinks };
+
 export default v3Data;
