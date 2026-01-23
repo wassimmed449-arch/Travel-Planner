@@ -35,7 +35,7 @@ const BrandingFooter = () => {
           className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-pink-500 to-purple-500 text-white rounded-full text-xs font-bold hover:shadow-lg transition-all active:scale-95"
         >
           <Instagram className="w-3.5 h-3.5" />
-          <span>@w.s_proshop</span>
+          <span>@ws_pro_shop</span>
         </button>
       </div>
     </div>

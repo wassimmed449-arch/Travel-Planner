@@ -138,7 +138,7 @@ export const wassimAuthor = {
     fr: 'Étudiant en traduction (anglais, arabe, français)', 
     en: 'Translation student (English, Arabic, French)' 
   },
-  instagram: 'https://www.instagram.com/w.s_proshop/',
+  instagram: 'https://www.instagram.com/ws_pro_shop',
   whatsapp: '+213552664037',
   baridimobRIP: '00799999002810927704',
   brand: 'WS ProShop',

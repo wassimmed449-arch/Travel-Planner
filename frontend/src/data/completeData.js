@@ -211,7 +211,7 @@ export const wassimAuthor = {
   age: 23,
   profession: { ar: 'مساعد اجتماعي للصحة العمومية', fr: 'Assistant social en santé publique', en: 'Public Health Social Assistant' },
   education: { ar: 'طالب ترجمة (إنجليزية، عربية، فرنسية)', fr: 'Étudiant en traduction (anglais, arabe, français)', en: 'Translation student (English, Arabic, French)' },
-  instagram: 'https://www.instagram.com/w.s_proshop/',
+  instagram: 'https://www.instagram.com/ws_pro_shop',
   whatsapp: '+213552664037',
   baridimobRIP: '00799999002810927704',
   quote: {
