@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils, Instagram, QrCode, Building2, Car } from 'lucide-react';
+import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils, Instagram, QrCode, Building2, Car, BookOpen, Download, Compass } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { allPlaces, moodCategories, getWinterRecommendations } from '../data/placesData';
