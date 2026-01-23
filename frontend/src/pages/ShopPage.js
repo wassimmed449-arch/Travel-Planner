@@ -108,9 +108,18 @@ const ShopPage = () => {
             <button
               onClick={handleDownloadPDF}
               data-testid="download-pdf-button"
-              className="w-full bg-white text-secondary rounded-2xl py-3 font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all"
+              className="w-full bg-white text-secondary rounded-2xl py-3 font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all mb-3"
             >
               📚 {language === 'ar' ? 'تحميل الكتاب PDF' : language === 'fr' ? 'Télécharger le livre PDF' : 'Download PDF Book'}
+            </button>
+
+            {/* VIP Support Gold Button */}
+            <button
+              onClick={handleVIPSupport}
+              data-testid="vip-support-button"
+              className="w-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 text-black rounded-2xl py-3 font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all border-2 border-yellow-300"
+            >
+              ⭐ {language === 'ar' ? 'تواصل مع وسيم (دعم VIP)' : language === 'fr' ? 'Contacter Wassim (Support VIP)' : 'Contact Wassim (VIP Support)'}
             </button>
           </motion.div>
         ) : (
