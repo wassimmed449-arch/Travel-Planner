@@ -48,13 +48,13 @@ const DualBotPage = () => {
     }]);
   }, [language, getWassimSuperBotGreeting, getFreeBotGreeting]);
 
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, [messages, scrollToBottom]);
 
   const getFreeBotResponse = (query) => {
     const lowerQuery = query.toLowerCase();
