@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils } from 'lucide-react';
+import { MessageCircle, Snowflake, Languages, MapPin, Calendar, Star, Crown, Trophy, Utensils, Volume2, Camera } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { allPlaces, moodCategories, getWinterRecommendations } from '../data/placesData';
@@ -176,6 +176,33 @@ const HomePage = () => {
             <Trophy className="w-8 h-8 mb-2 mx-auto" />
             <p className="font-bold text-sm">
               {language === 'ar' ? 'جواز بونة 🛂' : language === 'fr' ? 'Passeport Bône 🛂' : 'Bône Passport 🛂'}
+            </p>
+          </motion.button>
+        </div>
+
+        {/* PHASE 2 FEATURES */}
+        <div className="grid grid-cols-2 gap-4">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/soundscapes')}
+            data-testid="soundscapes-button"
+            className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
+          >
+            <Volume2 className="w-8 h-8 mb-2 mx-auto" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'أصوات عنابة 🎧' : language === 'fr' ? 'Sons d\'Annaba 🎧' : 'Soundscapes 🎧'}
+            </p>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/annaba-live')}
+            data-testid="annaba-live-button"
+            className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all"
+          >
+            <Camera className="w-8 h-8 mb-2 mx-auto" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'عنابة لايف 📸' : language === 'fr' ? 'Annaba Live 📸' : 'Annaba Live 📸'}
             </p>
           </motion.button>
         </div>
