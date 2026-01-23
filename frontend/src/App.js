@@ -2,7 +2,10 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { Toaster } from "@/components/ui/sonner";
 import Layout from "@/components/Layout";
+import ScrollToTop from "@/components/ScrollToTop";
+import MagicLinkActivator from "@/components/MagicLinkActivator";
 import HomePage from "@/pages/HomePage";
 import ExplorePage from "@/pages/ExplorePage";
 import PlansPage from "@/pages/PlansPage";
@@ -30,6 +33,15 @@ function App() {
     <LanguageProvider>
       <ThemeProvider>
         <BrowserRouter>
+          {/* Scroll to top on route change */}
+          <ScrollToTop />
+          
+          {/* Magic Link Premium Activation */}
+          <MagicLinkActivator />
+          
+          {/* Toast notifications */}
+          <Toaster position="top-center" richColors />
+          
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
