@@ -737,46 +737,91 @@ export const activities = [
 export const emergencyContacts = [
   {
     id: 'chu-ibn-rochd',
-    name: { ar: 'مستشفى ابن رشد الجامعي', fr: 'CHU Ibn Rochd' },
+    name: { ar: 'مستشفى ابن رشد الجامعي', fr: 'CHU Ibn Rochd', en: 'Ibn Rochd University Hospital' },
     type: 'hospital',
-    address: { ar: '11 بوليفارد الصديق بن يحيى، عنابة', fr: '11 Boulevard Seddik Benyahia, Annaba' },
-    hours: { ar: '24/7 (طوارئ وخدمات متنوعة)', fr: '24/7 (urgences et services divers)' },
-    phone: '038000000',
+    address: { ar: '11 بوليفارد الصديق بن يحيى، عنابة', fr: '11 Boulevard Seddik Benyahia, Annaba', en: '11 Boulevard Seddik Benyahia, Annaba' },
+    hours: { ar: '24/7 (طوارئ وخدمات متنوعة)', fr: '24/7 (urgences et services divers)', en: '24/7 (emergency and various services)' },
+    phone: '038865151',
     coordinates: [36.8950, 7.7500],
-    description: { ar: 'منشأة طبية شاملة مع تخصصات جراحية وعلاجية', fr: 'Établissement médical complet avec spécialités chirurgicales et thérapeutiques' }
+    description: { ar: 'المستشفى الجامعي الرئيسي في عنابة - طوارئ وجراحة وجميع التخصصات', fr: 'Principal hôpital universitaire d\'Annaba - urgences, chirurgie et toutes spécialités', en: 'Main university hospital in Annaba - emergency, surgery and all specialties' }
+  },
+  {
+    id: 'chu-dorban',
+    name: { ar: 'مستشفى دوربان', fr: 'CHU Dorban', en: 'Dorban Hospital' },
+    type: 'hospital',
+    address: { ar: 'حي دوربان، عنابة', fr: 'Quartier Dorban, Annaba', en: 'Dorban District, Annaba' },
+    hours: { ar: '24/7', fr: '24/7', en: '24/7' },
+    phone: '038864000',
+    coordinates: [36.8920, 7.7480],
+    description: { ar: 'قسم الطوارئ والجراحة العامة', fr: 'Service d\'urgence et chirurgie générale', en: 'Emergency and general surgery department' }
+  },
+  {
+    id: 'hopital-mere-enfant',
+    name: { ar: 'مستشفى الأم والطفل', fr: 'Hôpital Mère-Enfant', en: 'Mother and Child Hospital' },
+    type: 'hospital',
+    address: { ar: 'طريق القالة، عنابة', fr: 'Route d\'El Kala, Annaba', en: 'El Kala Road, Annaba' },
+    hours: { ar: '24/7', fr: '24/7', en: '24/7' },
+    phone: '038838000',
+    coordinates: [36.9010, 7.7550],
+    description: { ar: 'متخصص في صحة الأم والطفل - الولادة وطب الأطفال', fr: 'Spécialisé en santé mère-enfant - maternité et pédiatrie', en: 'Specialized in mother and child health - maternity and pediatrics' }
   },
   {
     id: 'cac-oncology',
-    name: { ar: 'المركز الاستشفائي لمحاربة السرطان', fr: 'Centre Anti-Cancer (CAC)' },
+    name: { ar: 'مركز مكافحة السرطان', fr: 'Centre Anti-Cancer (CAC)', en: 'Anti-Cancer Center (CAC)' },
     type: 'hospital',
-    address: { ar: 'CHU - طريق المستشفى، عنابة', fr: 'CHU - Route de l\'Hôpital, Annaba' },
-    hours: { ar: '24/7', fr: '24/7' },
-    phone: '038000001',
+    address: { ar: 'CHU - طريق المستشفى، عنابة', fr: 'CHU - Route de l\'Hôpital, Annaba', en: 'CHU - Hospital Road, Annaba' },
+    hours: { ar: '24/7', fr: '24/7', en: '24/7' },
+    phone: '038865200',
     coordinates: [36.8960, 7.7510],
-    description: { ar: 'مركز علاج السرطان المتقدم', fr: 'Centre de traitement du cancer avancé' }
+    description: { ar: 'مركز متخصص في علاج السرطان والعلاج الكيميائي', fr: 'Centre spécialisé en traitement du cancer et chimiothérapie', en: 'Specialized center for cancer treatment and chemotherapy' }
+  },
+  {
+    id: 'clinique-razi',
+    name: { ar: 'عيادة الرازي', fr: 'Clinique El Razi', en: 'El Razi Clinic' },
+    type: 'clinic',
+    address: { ar: 'شارع زعرورة العربي، وسط المدينة، عنابة', fr: 'Rue Zaroura Larbi, Centre-ville, Annaba', en: 'Zaroura Larbi Street, City Center, Annaba' },
+    phone: '038840505',
+    coordinates: [36.9005, 7.7620],
+    description: { ar: 'عيادة خاصة متعددة التخصصات - جراحة وتشخيص', fr: 'Clinique privée multi-spécialités - chirurgie et diagnostic', en: 'Private multi-specialty clinic - surgery and diagnostics' }
   },
   {
     id: 'clinique-farabi',
-    name: { ar: 'عيادة الفارابي', fr: 'Clinique El Farabi' },
+    name: { ar: 'عيادة الفارابي', fr: 'Clinique El Farabi', en: 'El Farabi Clinic' },
     type: 'clinic',
-    address: { ar: '21-23 شارع الإخوة شوش محمد كامل، البرتقال، عنابة', fr: '21-23 Rue des Frères Chouch Mohammed Kamel, El Orangerie, Annaba' },
-    phone: '038000002',
+    address: { ar: '21-23 شارع الإخوة شوش، البرتقال، عنابة', fr: '21-23 Rue des Frères Chouch, El Orangerie, Annaba', en: '21-23 Frères Chouch Street, El Orangerie, Annaba' },
+    phone: '038834343',
     coordinates: [36.9000, 7.7600],
-    description: { ar: 'عيادة طبية متعددة التخصصات', fr: 'Clinique médicale multi-spécialités' }
+    description: { ar: 'عيادة طبية متعددة التخصصات مع معدات حديثة', fr: 'Clinique médicale multi-spécialités avec équipements modernes', en: 'Multi-specialty medical clinic with modern equipment' }
+  },
+  {
+    id: 'clinique-nour',
+    name: { ar: 'عيادة النور', fr: 'Clinique Nour', en: 'Nour Clinic' },
+    type: 'clinic',
+    address: { ar: 'حي سيدي إبراهيم، عنابة', fr: 'Cité Sidi Brahim, Annaba', en: 'Sidi Brahim District, Annaba' },
+    phone: '038866600',
+    coordinates: [36.8980, 7.7580],
+    description: { ar: 'عيادة خاصة للجراحة والتشخيص', fr: 'Clinique privée pour chirurgie et diagnostic', en: 'Private clinic for surgery and diagnostics' }
   },
   {
     id: 'police',
-    name: { ar: 'الشرطة', fr: 'Police' },
+    name: { ar: 'الشرطة', fr: 'Police', en: 'Police' },
     type: 'police',
     phone: '1548',
-    description: { ar: 'رقم الطوارئ للشرطة', fr: 'Numéro d\'urgence police' }
+    description: { ar: 'رقم الطوارئ للشرطة - متاح 24/7', fr: 'Numéro d\'urgence police - disponible 24/7', en: 'Police emergency number - available 24/7' }
   },
   {
     id: 'civil-protection',
-    name: { ar: 'الحماية المدنية', fr: 'Protection Civile' },
+    name: { ar: 'الحماية المدنية', fr: 'Protection Civile', en: 'Civil Protection' },
     type: 'emergency',
     phone: '14',
-    description: { ar: 'رقم الطوارئ للحماية المدنية', fr: 'Numéro d\'urgence protection civile' }
+    description: { ar: 'رقم الطوارئ للحماية المدنية والإسعاف', fr: 'Numéro d\'urgence protection civile et ambulance', en: 'Civil protection and ambulance emergency number' }
+  },
+  {
+    id: 'gendarmerie',
+    name: { ar: 'الدرك الوطني', fr: 'Gendarmerie Nationale', en: 'National Gendarmerie' },
+    type: 'police',
+    phone: '1055',
+    description: { ar: 'رقم الطوارئ للدرك الوطني', fr: 'Numéro d\'urgence gendarmerie nationale', en: 'National gendarmerie emergency number' }
   }
 ];
 
