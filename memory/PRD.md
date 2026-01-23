@@ -83,9 +83,9 @@ Full knowledge base injected from PDF:
 
 ## App URLs
 
-**Preview**: `https://travelannaba.preview.emergentagent.com`
+**Preview**: `https://visit-annaba.preview.emergentagent.com`
 
-**Premium Activation**: `https://travelannaba.preview.emergentagent.com/?activate=ANNABA-VIP-23-W`
+**Premium Activation**: `https://visit-annaba.preview.emergentagent.com/?activate=ANNABA-VIP-23-W`
 
 **Secret Code**: `ANNABA-VIP-23-W`
 
