@@ -105,10 +105,10 @@ export const hotelsComplete = [
       fr: 'Les prix varient selon les dates et le type de chambre',
       en: 'Prices vary depending on dates and room type'
     },
-    coordinates: [36.8350, 7.6850],
+    coordinates: [36.915, 7.665], // REAL: Seraidi (Mount Edough)
     mood: ['photo', 'quiet'],
     winterRecommended: true,
-    image: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg' // REPLACE WITH REAL CAPTURE
+    image: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'
   },
   {
     id: 'sebous-international',
@@ -127,10 +127,10 @@ export const hotelsComplete = [
       fr: 'Emplacement très central, design architectural emblématique, adapté à ceux qui recherchent une expérience hôtelière luxueuse. Hotel Seybouse est l\'endroit où vous pouvez prendre les meilleures photos d\'Annaba, une tour haute avec modernité au cœur de la ville, alliant son histoire et son âme',
       en: 'Very central location, iconic architectural design, suitable for those looking for a luxurious hotel experience. Hotel Seybouse is the place where you can take the best photos of Annaba, a tall tower with modernity in the heart of the city, combining its history and soul'
     },
-    coordinates: [36.9020, 7.7650],
+    coordinates: [36.900, 7.760], // REAL: City Center
     mood: ['family', 'photo'],
     winterRecommended: true,
-    image: 'https://images.pexels.com/photos/271619/pexels-photo-271619.jpeg' // REPLACE WITH REAL CAPTURE
+    image: 'https://images.pexels.com/photos/271619/pexels-photo-271619.jpeg'
   },
   {
     id: 'rym-el-djamil',
