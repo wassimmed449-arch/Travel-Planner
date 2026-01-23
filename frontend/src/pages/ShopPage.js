@@ -95,7 +95,10 @@ const ShopPage = () => {
                   {language === 'ar' ? 'عضو مميز نشط! ✨' : language === 'fr' ? 'Membre Premium Actif! ✨' : 'Active Premium Member! ✨'}
                 </h2>
                 <p className="text-sm opacity-90">
-                  {daysRemaining} {language === 'ar' ? 'يوم متبقي' : language === 'fr' ? 'jours restants' : 'days remaining'}
+                  {daysRemaining === Infinity 
+                    ? (language === 'ar' ? 'وصول مدى الحياة ♾️' : language === 'fr' ? 'Accès à vie ♾️' : 'Lifetime Access ♾️')
+                    : `${daysRemaining} ${language === 'ar' ? 'يوم متبقي' : language === 'fr' ? 'jours restants' : 'days remaining'}`
+                  }
                 </p>
               </div>
             </div>
@@ -129,8 +132,8 @@ const ShopPage = () => {
               <div className="flex items-baseline gap-2 mb-4">
                 <span className="text-5xl font-black text-primary">{PremiumManager.PRICE}</span>
                 <span className="text-2xl font-bold text-primary">{PremiumManager.CURRENCY}</span>
-                <span className="text-lg text-muted-foreground">
-                  / {PremiumManager.DURATION_MONTHS} {language === 'ar' ? 'أشهر' : language === 'fr' ? 'mois' : 'months'}
+                <span className="text-lg text-muted-foreground font-bold">
+                  / {language === 'ar' ? 'مدى الحياة' : language === 'fr' ? 'À VIE' : 'LIFETIME'}
                 </span>
               </div>
 
