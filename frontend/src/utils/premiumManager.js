@@ -212,10 +212,10 @@ export const PremiumManager = {
   getPaymentInfo: () => ({
     method: 'BaridiMob',
     rip: '00799999002810927704',
-    recipient: 'Ben Fernan Mohamed Wassim',
+    recipient: 'Benfernane Mohamed Ouassim',
     amount: PREMIUM_PRICE_DA,
     currency: 'DZD',
-    whatsappNumber: '+213552664037',
+    whatsappNumber: '213552664037',
     whatsappMessageTemplate: {
       ar: `مرحباً وسيم،\n\nلقد قمت بتحويل ${PREMIUM_PRICE_DA} دج للحصول على الباقة الشاملة لتطبيق عنابة.\n\nRIP: 00799999002810927704\n\nمرفق إيصال الدفع.\n\nشكراً! 🙏`,
       fr: `Bonjour Wassim,\n\nJ'ai transféré ${PREMIUM_PRICE_DA} DA pour obtenir le forfait Ultimate de l'app Annaba.\n\nRIP: 00799999002810927704\n\nReçu de paiement joint.\n\nMerci! 🙏`,

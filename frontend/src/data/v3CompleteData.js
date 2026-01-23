@@ -124,8 +124,8 @@ Until next time... and may God protect you.`
 
 export const wassimAuthor = {
   name: 'بن فرنان محمد وسيم',
-  nameFr: 'Ben Fernan Mohamed Wassim',
-  nameEn: 'Ben Fernan Mohamed Wassim',
+  nameFr: 'Benfernane Mohamed Ouassim',
+  nameEn: 'Benfernane Mohamed Ouassim',
   age: 23,
   city: { ar: 'عنابة', fr: 'Annaba', en: 'Annaba' },
   profession: { 
