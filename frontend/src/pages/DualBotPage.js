@@ -133,32 +133,106 @@ const DualBotPage = () => {
   const getWassimSuperBotResponse = (query) => {
     const lowerQuery = query.toLowerCase();
 
-    // Wassim style - energetic, emoji-heavy, personal
+    // === FULL KNOWLEDGE BASE FROM PDF ===
+    
+    // Keywords for matching
     const keywords = {
       ar: {
-        pizza: ['بيتزا', 'pizza'],
-        beach: ['شاطئ', 'بحر', 'سباحة'],
-        hotel: ['فندق', 'نوم', 'إقامة'],
-        winter: ['شتاء', 'بارد', 'سرايدي'],
-        fun: ['مرح', 'متعة', 'سهرة']
+        pizza: ['بيتزا', 'pizza', 'طعام', 'أكل'],
+        beach: ['شاطئ', 'بحر', 'سباحة', 'جنان', 'عين عشير'],
+        hotel: ['فندق', 'نوم', 'إقامة', 'شيراتون', 'سيبوس', 'سابري'],
+        winter: ['شتاء', 'بارد', 'سرايدي', 'جبل', 'ثلج', 'تلفريك'],
+        fun: ['مرح', 'متعة', 'سهرة', 'مقهى', 'كافيه'],
+        history: ['تاريخ', 'هيبون', 'قديم', 'أوغسطين', 'فينيقي'],
+        transport: ['تاكسي', 'نقل', 'سعر', 'مطار'],
+        hospital: ['مستشفى', 'طوارئ', 'طبيب']
       },
       fr: {
-        pizza: ['pizza'],
-        beach: ['plage', 'mer', 'baignade'],
-        hotel: ['hôtel', 'dormir'],
-        winter: ['hiver', 'froid', 'seraidi'],
-        fun: ['fun', 'amusement', 'sortie']
+        pizza: ['pizza', 'nourriture', 'manger', 'restaurant'],
+        beach: ['plage', 'mer', 'baignade', 'djenen', 'ain achir'],
+        hotel: ['hôtel', 'dormir', 'sheraton', 'seybouse', 'sabri'],
+        winter: ['hiver', 'froid', 'seraidi', 'montagne', 'neige', 'téléphérique'],
+        fun: ['fun', 'amusement', 'sortie', 'café'],
+        history: ['histoire', 'hippone', 'ancien', 'augustin', 'phénicien'],
+        transport: ['taxi', 'transport', 'prix', 'aéroport'],
+        hospital: ['hôpital', 'urgence', 'médecin']
       },
       en: {
-        pizza: ['pizza'],
-        beach: ['beach', 'sea', 'swim'],
-        hotel: ['hotel', 'sleep'],
-        winter: ['winter', 'cold', 'seraidi'],
-        fun: ['fun', 'entertainment', 'night out']
+        pizza: ['pizza', 'food', 'eat', 'restaurant'],
+        beach: ['beach', 'sea', 'swim', 'djenen', 'ain achir'],
+        hotel: ['hotel', 'sleep', 'sheraton', 'seybouse', 'sabri'],
+        winter: ['winter', 'cold', 'seraidi', 'mountain', 'snow', 'cable car'],
+        fun: ['fun', 'entertainment', 'night out', 'cafe'],
+        history: ['history', 'hippo', 'ancient', 'augustine', 'phoenician'],
+        transport: ['taxi', 'transport', 'price', 'airport'],
+        hospital: ['hospital', 'emergency', 'doctor']
       }
     };
 
     const currentKeywords = keywords[language];
+
+    // === HISTORY RESPONSES (From PDF) ===
+    if (currentKeywords.history.some(k => lowerQuery.includes(k))) {
+      return {
+        text: language === 'ar' 
+          ? 'عنابة؟ تاريخ عظيم يا صاحبي! 📜✨ أسست في 1295 ق.م باسم "أوبون"! ثم جاء الفينيقيون وسموها "هيبون"، وبعدين الرومان... 🏛️ وفي القرن 5 هـ انتقلت لموقعها الحالي وسماها العرب "بونة"! 💎 3300+ سنة من الحضارة! روح صفحة التاريخ تشوف التفاصيل! 🔥'
+          : language === 'fr'
+          ? 'Annaba? Une grande histoire mon ami! 📜✨ Fondée en 1295 av. J.-C. sous le nom d\'Ubbo! Puis les Phéniciens l\'ont appelée Hippone, puis les Romains... 🏛️ Au 5ème siècle AH, elle a déménagé et les Arabes l\'ont appelée Bône! 💎 3300+ ans de civilisation! Va voir la page Histoire pour les détails! 🔥'
+          : 'Annaba? Great history my friend! 📜✨ Founded in 1295 BC as "Ubbo"! Then Phoenicians called it Hippo, then Romans... 🏛️ In 5th century AH it moved and Arabs called it Bône! 💎 3300+ years of civilization! Check the History page for details! 🔥'
+      };
+    }
+
+    // === HOTEL RESPONSES (From PDF with specific details) ===
+    if (currentKeywords.hotel.some(k => lowerQuery.includes(k))) {
+      if (lowerQuery.includes('شيراتون') || lowerQuery.includes('sheraton')) {
+        return {
+          text: language === 'ar' 
+            ? 'شيراتون عنابة! 🏨⭐⭐⭐⭐⭐ أحسن فندق في المدينة! موقع مركزي قرب الكورنيش، غرف واسعة بإطلالات على الميناء! 🌊 مطعمان ومسبح خارجي! نصيحتي: اطلب غرفة في الطوابق العليا للإطلالة البحرية! 😎🔥'
+            : language === 'fr'
+            ? 'Sheraton Annaba! 🏨⭐⭐⭐⭐⭐ Meilleur hôtel de la ville! Emplacement central près de la Corniche, chambres spacieuses avec vues sur le port! 🌊 Deux restaurants et piscine extérieure! Mon conseil: demande une chambre aux étages supérieurs pour la vue mer! 😎🔥'
+            : 'Sheraton Annaba! 🏨⭐⭐⭐⭐⭐ Best hotel in the city! Central location near Corniche, spacious rooms with port views! 🌊 Two restaurants and outdoor pool! My tip: request a room on upper floors for sea view! 😎🔥'
+        };
+      }
+      if (lowerQuery.includes('سيبوس') || lowerQuery.includes('seybouse')) {
+        return {
+          text: language === 'ar' 
+            ? 'فندق سيبوس إنترناشيونال! 🏨⭐⭐⭐⭐⭐ البرج الأيقوني في قلب عنابة! 14 طابق! 🔥 مطعم بانورامي في الأعلى - أحسن مكان لتصوير المدينة! 📸 مسبح وسبا ومركز لياقة! مناسب لرجال الأعمال والعائلات! 💯'
+            : language === 'fr'
+            ? 'Hotel Seybouse International! 🏨⭐⭐⭐⭐⭐ La tour iconique au cœur d\'Annaba! 14 étages! 🔥 Restaurant panoramique au sommet - meilleur endroit pour photographier la ville! 📸 Piscine, spa et centre fitness! Idéal pour les hommes d\'affaires et familles! 💯'
+            : 'Hotel Seybouse International! 🏨⭐⭐⭐⭐⭐ The iconic tower in the heart of Annaba! 14 floors! 🔥 Panoramic restaurant on top - best place to photograph the city! 📸 Pool, spa and fitness center! Ideal for businessmen and families! 💯'
+        };
+      }
+      // General hotel response
+      return {
+        text: language === 'ar' 
+          ? 'فنادق عنابة؟ عندك خيارات كثيرة يا معلم! 🏨\n\n⭐⭐⭐⭐⭐ شيراتون وسيبوس (فخامة)\n⭐⭐⭐⭐ جولدن توليب سابري (عائلي قرب الشاطئ)\n⭐⭐⭐⭐ المنتزه سرايدي (تحفة معمارية + إطلالة جبلية)\n⭐⭐⭐⭐ هوتيل دوريان (وسط المدينة)\n\nشنو تفضل: بحر ولا جبل ولا وسط المدينة؟ 😎'
+          : language === 'fr'
+          ? 'Hôtels Annaba? Tu as plein de choix mon pote! 🏨\n\n⭐⭐⭐⭐⭐ Sheraton et Seybouse (luxe)\n⭐⭐⭐⭐ Golden Tulip Sabri (familial près plage)\n⭐⭐⭐⭐ El Mountazah Seraidi (chef-d\'œuvre + vue montagne)\n⭐⭐⭐⭐ Hôtel d\'Orient (centre-ville)\n\nTu préfères quoi: mer, montagne ou centre-ville? 😎'
+          : 'Annaba hotels? You have many options boss! 🏨\n\n⭐⭐⭐⭐⭐ Sheraton & Seybouse (luxury)\n⭐⭐⭐⭐ Golden Tulip Sabri (family near beach)\n⭐⭐⭐⭐ El Mountazah Seraidi (masterpiece + mountain view)\n⭐⭐⭐⭐ Hotel d\'Orient (city center)\n\nWhat do you prefer: sea, mountain or city center? 😎'
+      };
+    }
+
+    // === TRANSPORT RESPONSES ===
+    if (currentKeywords.transport.some(k => lowerQuery.includes(k))) {
+      return {
+        text: language === 'ar' 
+          ? 'التنقل في عنابة؟ خليني نوريك! 🚕\n\n📍 المطار ↔ وسط المدينة: 800-1200 دج\n📍 وسط المدينة ↔ سرايدي: 600-900 دج\n📍 وسط المدينة ↔ الشواطئ: 300-500 دج\n🚡 التلفريك لسرايدي: 60-70 دج فقط!\n🚌 الحافلات: 20 دج داخل المدينة\n\n💡 نصيحتي: دايماً اتفق على السعر قبل ما تركب! 😎'
+          : language === 'fr'
+          ? 'Se déplacer à Annaba? Laisse-moi te montrer! 🚕\n\n📍 Aéroport ↔ Centre: 800-1200 DA\n📍 Centre ↔ Seraidi: 600-900 DA\n📍 Centre ↔ Plages: 300-500 DA\n🚡 Téléphérique pour Seraidi: 60-70 DA seulement!\n🚌 Bus: 20 DA dans la ville\n\n💡 Mon conseil: toujours négocier le prix avant de monter! 😎'
+          : 'Getting around Annaba? Let me show you! 🚕\n\n📍 Airport ↔ Center: 800-1200 DA\n📍 Center ↔ Seraidi: 600-900 DA\n📍 Center ↔ Beaches: 300-500 DA\n🚡 Cable car to Seraidi: only 60-70 DA!\n🚌 Bus: 20 DA in city\n\n💡 My tip: always agree on price before getting in! 😎'
+      };
+    }
+
+    // === HOSPITAL/EMERGENCY RESPONSES ===
+    if (currentKeywords.hospital.some(k => lowerQuery.includes(k))) {
+      return {
+        text: language === 'ar' 
+          ? 'طوارئ؟ إن شاء الله خير! 🏥\n\n🚨 الحماية المدنية: 14\n🚔 الشرطة: 1548\n🏥 CHU ابن رشد: 038865151\n🏥 مستشفى دوربان: 038864000\n🏥 عيادة الرازي: 038840505\n\nالله يسلمك! اتصل مباشرة لو عندك حالة طارئة! 🙏'
+          : language === 'fr'
+          ? 'Urgence? J\'espère que tout va bien! 🏥\n\n🚨 Protection civile: 14\n🚔 Police: 1548\n🏥 CHU Ibn Rochd: 038865151\n🏥 Hôpital Dorban: 038864000\n🏥 Clinique El Razi: 038840505\n\nBonne chance! Appelle directement si c\'est urgent! 🙏'
+          : 'Emergency? Hope everything is okay! 🏥\n\n🚨 Civil Protection: 14\n🚔 Police: 1548\n🏥 CHU Ibn Rochd: 038865151\n🏥 Dorban Hospital: 038864000\n🏥 El Razi Clinic: 038840505\n\nStay safe! Call directly if it\'s urgent! 🙏'
+      };
+    }
 
     // Pizza query - Wassim style
     if (currentKeywords.pizza.some(k => lowerQuery.includes(k))) {
@@ -175,10 +249,10 @@ const DualBotPage = () => {
     if (currentKeywords.beach.some(k => lowerQuery.includes(k))) {
       return {
         text: language === 'ar' 
-          ? 'شاطئ؟ يا رب! 🏖️ روح Jnan Bey - المفضل عند الجميع! 🌊 أو Ain Achir مكاني الخاص، نظيف ياسر! ✨ ما تنساش الكريم الواقي والنظارات الشمسية! 😎☀️'
+          ? 'شاطئ؟ يا رب! 🏖️ عندك خيارات كثيرة!\n\n🏆 جنان البي - المفضل عند الجميع! واسع وجميل!\n✨ عين عشير - مكاني الخاص، نظيف ياسر!\n🪨 بلاج اللوح - أحسن شاطئ صخري في الجزائر!\n👨‍👩‍👧 بلفيدير - مناسب للعائلات\n\nما تنساش الكريم الواقي والنظارات الشمسية! 😎☀️'
           : language === 'fr'
-          ? 'Plage? Génial! 🏖️ Va à Jnan Bey - le préféré de tous! 🌊 Ou Ain Achir mon spot perso, super propre! ✨ N\'oublie pas la crème solaire et les lunettes! 😎☀️'
-          : 'Beach? Awesome! 🏖️ Go to Jnan Bey - everyone\'s favorite! 🌊 Or Ain Achir my personal spot, super clean! ✨ Don\'t forget sunscreen and sunglasses! 😎☀️'
+          ? 'Plage? Génial! 🏖️ Tu as plein de choix!\n\n🏆 Djenen El Bey - le préféré de tous! Large et beau!\n✨ Ain Achir - mon spot perso, super propre!\n🪨 Plage El Louh - meilleure plage rocheuse d\'Algérie!\n👨‍👩‍👧 Belvédère - idéal pour les familles\n\nN\'oublie pas la crème solaire et les lunettes! 😎☀️'
+          : 'Beach? Awesome! 🏖️ You have many options!\n\n🏆 Djenen El Bey - everyone\'s favorite! Wide and beautiful!\n✨ Ain Achir - my personal spot, super clean!\n🪨 Plage El Louh - best rocky beach in Algeria!\n👨‍👩‍👧 Belvédère - ideal for families\n\nDon\'t forget sunscreen and sunglasses! 😎☀️'
       };
     }
 
@@ -186,14 +260,14 @@ const DualBotPage = () => {
     if (currentKeywords.winter.some(k => lowerQuery.includes(k))) {
       return {
         text: language === 'ar' 
-          ? 'سرايدي في الشتاء؟ يا خسارة اللي ما يروحش! ❄️🌲 الهدوء والسحب على الجبال... سحر خالص! 😍 التلفريك يخليك تشوف منظر خرافي! 🚡 شد رواحك وما تفوتهاش! 💯'
+          ? 'سرايدي في الشتاء؟ يا خسارة اللي ما يروحش! ❄️🌲\n\nالهدوء والسحب على الجبال... سحر خالص! 😍\n🚡 التلفريك يخليك تشوف منظر خرافي!\n🏨 فندق المنتزه - تحفة معمارية من الستينات!\n☕ قهوة ساخنة مع الضباب = جنة!\n\nنصيحتي: سرايدي في الشتاء أحسن من الصيف! شد رواحك! 💯'
           : language === 'fr'
-          ? 'Seraidi en hiver? C\'est dommage de rater ça! ❄️🌲 Le calme et les nuages sur les montagnes... pure magie! 😍 Le téléphérique te donne une vue incroyable! 🚡 Fonce et ne rate pas ça! 💯'
-          : 'Seraidi in winter? Such a shame to miss it! ❄️🌲 The calm and clouds on mountains... pure magic! 😍 The cable car gives you amazing view! 🚡 Go for it and don\'t miss it! 💯'
+          ? 'Seraidi en hiver? C\'est dommage de rater ça! ❄️🌲\n\nLe calme et les nuages sur les montagnes... pure magie! 😍\n🚡 Le téléphérique te donne une vue incroyable!\n🏨 Hôtel El Mountazah - chef-d\'œuvre des années 60!\n☕ Café chaud avec le brouillard = paradis!\n\nMon conseil: Seraidi en hiver > été! Fonce! 💯'
+          : 'Seraidi in winter? Such a shame to miss it! ❄️🌲\n\nThe calm and clouds on mountains... pure magic! 😍\n🚡 The cable car gives you amazing view!\n🏨 El Mountazah Hotel - 60s architectural masterpiece!\n☕ Hot coffee with fog = paradise!\n\nMy tip: Seraidi in winter > summer! Go for it! 💯'
       };
     }
 
-    // Default Wassim response
+    // Default search response
     const results = searchPlaces(query, language);
     if (results.length > 0) {
       return {
@@ -208,10 +282,10 @@ const DualBotPage = () => {
 
     return {
       text: language === 'ar' 
-        ? 'ما فهمتش واش تقصد بالضبط 😅 قولي شوية أوضح؟ مثلاً: بيتزا، شاطئ، فندق، أو سرايدي؟ 🤔'
+        ? 'ما فهمتش واش تقصد بالضبط 😅 قولي شوية أوضح؟ جرب:\n\n🏖️ شاطئ / بحر\n🏨 فندق / إقامة\n🍕 بيتزا / مطعم\n❄️ سرايدي / شتاء\n📜 تاريخ عنابة\n🚕 تاكسي / نقل\n🏥 مستشفى\n\nولا قولي واش تحب نعاونك فيه! 🤔💪'
         : language === 'fr'
-        ? 'J\'ai pas bien compris ce que tu veux dire 😅 Dis-moi plus clairement? Genre: pizza, plage, hôtel, ou seraidi? 🤔'
-        : 'I didn\'t quite get what you mean 😅 Tell me more clearly? Like: pizza, beach, hotel, or seraidi? 🤔'
+        ? 'J\'ai pas bien compris ce que tu veux dire 😅 Dis-moi plus clairement? Essaye:\n\n🏖️ plage / mer\n🏨 hôtel / dormir\n🍕 pizza / restaurant\n❄️ seraidi / hiver\n📜 histoire d\'Annaba\n🚕 taxi / transport\n🏥 hôpital\n\nOu dis-moi comment je peux t\'aider! 🤔💪'
+        : 'I didn\'t quite get what you mean 😅 Tell me more clearly? Try:\n\n🏖️ beach / sea\n🏨 hotel / sleep\n🍕 pizza / restaurant\n❄️ seraidi / winter\n📜 Annaba history\n🚕 taxi / transport\n🏥 hospital\n\nOr tell me how I can help! 🤔💪'
     };
   };
 
