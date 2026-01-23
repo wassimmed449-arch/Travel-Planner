@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Crown, Check, X, CreditCard, MessageCircle, Key, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -9,17 +9,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ShopPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [isPremium, setIsPremium] = useState(false);
+  
+  // Use lazy initialization
+  const [isPremium, setIsPremium] = useState(() => PremiumManager.isPremiumActive());
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [keyInput, setKeyInput] = useState('');
-  const [daysRemaining, setDaysRemaining] = useState(0);
+  const [daysRemaining, setDaysRemaining] = useState(() => PremiumManager.getDaysRemaining());
   const [activationResult, setActivationResult] = useState(null);
-
-  useEffect(() => {
-    setIsPremium(PremiumManager.isPremiumActive());
-    setDaysRemaining(PremiumManager.getDaysRemaining());
-  }, []);
 
   const features = PremiumManager.getFeaturesList();
   const paymentInfo = PremiumManager.getPaymentInfo();
