@@ -75,15 +75,21 @@ Today, Annaba is a modern coastal city, combining the fragrance of history and t
 
   aboutWassim: {
     ar: `من هو معد هذا الدليل
+
 أنا بن فرنان محمد وسيم شاب عنابي في 23 من عمري، ولدت وترعرعت في هذه المدينة التي أحبها جدًا، لدرجة أنني اخترتها عنوانًا لأول كتاب قمت به على الإطلاق. حاصل على اثنين بكالوريوس، وأعمل كمساعد اجتماعي للصحة العمومية في ميدان الشبه طبي، حيث أتعامل مع الشباب والكبار في السن وأفهم تحدياتهم اليومية. في الوقت نفسه، أنا طالب تخصص الترجمة التحريرية والتفسيرية باللغات الإنجليزية والعربية والفرنسية، ما يمنحني القدرة على نقل الأفكار بدقة نوعا ما واجادة للغات. أحب المعلوماتية والتطور التكنولوجي، وأسعى دائمًا لأن أكون شابًا طموحًا يقدم محتوى ممتع ومفيد للآخرين.
+
 أتمنى أن يلقى هذا الدليل إعجابكم وفائدتكم، وأن تجدوا فيه جميع المعلومات التي تستحقونها.`,
     
     fr: `Qui est l'auteur de ce guide
-Je suis Ben Fernan Mohamed Wassim, un jeune d'Annaba de 23 ans, né et élevé dans cette ville que j'aime beaucoup, au point que je l'ai choisie comme titre de mon tout premier livre. Titulaire de deux licences, je travaille comme assistant social en santé publique dans le domaine paramédical, où je traite avec les jeunes et les personnes âgées et comprends leurs défis quotidiens. En même temps, je suis étudiant en traduction écrite et interprétation dans les langues anglaise, arabe et française, ce qui me donne la capacité de transmettre des idées avec une certaine précision et maîtrise des langues. J'aime l'informatique et le développement technologique, et je m'efforce toujours d'être un jeune ambitieux qui fournit un contenu agréable et utile aux autres.
+
+Je suis Ben Fernan Mohamed Ouassim, un jeune d'Annaba de 23 ans, né et élevé dans cette ville que j'aime beaucoup, au point que je l'ai choisie comme titre de mon tout premier livre. Titulaire de deux licences, je travaille comme assistant social en santé publique dans le domaine paramédical, où je traite avec les jeunes et les personnes âgées et comprends leurs défis quotidiens. En même temps, je suis étudiant en traduction écrite et interprétation dans les langues anglaise, arabe et française, ce qui me donne la capacité de transmettre des idées avec une certaine précision et maîtrise des langues. J'aime l'informatique et le développement technologique, et je m'efforce toujours d'être un jeune ambitieux qui fournit un contenu agréable et utile aux autres.
+
 J'espère que ce guide vous plaira et vous sera utile, et que vous y trouverez toutes les informations que vous méritez.`,
     
     en: `Who is the author of this guide
-I am Ben Fernan Mohamed Wassim, a 23-year-old young man from Annaba, born and raised in this city that I love very much, to the point that I chose it as the title of my very first book. Holder of two bachelor's degrees, I work as a social assistant in public health in the paramedical field, where I deal with young people and the elderly and understand their daily challenges. At the same time, I am a student of written translation and interpretation in English, Arabic and French languages, which gives me the ability to convey ideas with some accuracy and language proficiency. I love computer science and technological development, and I always strive to be an ambitious young man who provides enjoyable and useful content to others.
+
+I am Ben Fernan Mohamed Ouassim, a 23-year-old young man from Annaba, born and raised in this city that I love very much, to the point that I chose it as the title of my very first book. Holder of two bachelor's degrees, I work as a social assistant in public health in the paramedical field, where I deal with young people and the elderly and understand their daily challenges. At the same time, I am a student of written translation and interpretation in English, Arabic and French languages, which gives me the ability to convey ideas with some accuracy and language proficiency. I love computer science and technological development, and I always strive to be an ambitious young man who provides enjoyable and useful content to others.
+
 I hope this guide will please you and be useful to you, and that you will find in it all the information you deserve.`
   },
 
