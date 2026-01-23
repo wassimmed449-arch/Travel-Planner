@@ -86,7 +86,7 @@ const InstagramExplorerPage = () => {
   ];
 
   const openInstagramHashtag = (hashtag) => {
-    window.open(`https://www.instagram.com/explore/tags/${hashtag}/`, '_blank');
+    window.open(`https://www.instagram.com/explore/tags/${hashtag}/`, '_blank', 'noopener,noreferrer');
   };
 
   const t = (obj) => obj[language] || obj['en'] || obj['ar'];
