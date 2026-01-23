@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Camera, Heart, MessageCircle, Share2, MapPin, Clock, Plus, X, Image as ImageIcon, Send } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -145,8 +145,9 @@ const AnnabaLivePage = () => {
     setShowNewPostModal(false);
   };
 
-  const formatTimeAgo = (timestamp) => {
-    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  const formatTimeAgo = useCallback((timestamp) => {
+    const now = Date.now();
+    const seconds = Math.floor((now - timestamp) / 1000);
     
     if (seconds < 60) return language === 'ar' ? 'الآن' : language === 'fr' ? 'Maintenant' : 'Just now';
     if (seconds < 3600) {
@@ -159,7 +160,7 @@ const AnnabaLivePage = () => {
     }
     const days = Math.floor(seconds / 86400);
     return language === 'ar' ? `منذ ${days} يوم` : language === 'fr' ? `Il y a ${days}j` : `${days}d ago`;
-  };
+  }, [language]);
 
   return (
     <div className="min-h-screen bg-background pb-24">
