@@ -311,6 +311,67 @@ const HomePage = () => {
           </button>
         </div>
 
+        {/* History & Introduction - Deep Content */}
+        <div className="grid grid-cols-2 gap-4">
+          <button 
+            onClick={() => navigate('/introduction')}
+            data-testid="intro-button"
+            className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-2xl p-4 text-start"
+          >
+            <Compass className="w-6 h-6 mb-2" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'المقدمة' : language === 'fr' ? 'Introduction' : 'Introduction'}
+            </p>
+            <p className="text-xs opacity-80">
+              {language === 'ar' ? 'عنابة في قلب الجزائر' : language === 'fr' ? 'Annaba au cœur' : 'Annaba at heart'}
+            </p>
+          </button>
+
+          <button 
+            onClick={() => navigate('/history')}
+            data-testid="history-button"
+            className="bg-gradient-to-br from-amber-600 to-orange-700 text-white rounded-2xl p-4 text-start"
+          >
+            <BookOpen className="w-6 h-6 mb-2" />
+            <p className="font-bold text-sm">
+              {language === 'ar' ? 'تاريخ عنابة' : language === 'fr' ? 'Histoire' : 'History'}
+            </p>
+            <p className="text-xs opacity-80">
+              {language === 'ar' ? '3300 سنة' : language === 'fr' ? '3300 ans' : '3300 years'}
+            </p>
+          </button>
+        </div>
+
+        {/* Premium PDF Download - Only visible for premium users */}
+        {isPremium && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-secondary via-secondary to-primary text-secondary-foreground rounded-3xl p-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                <Download className="w-7 h-7" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg">
+                  {language === 'ar' ? '📚 تحميل كتاب PDF' : language === 'fr' ? '📚 Télécharger le PDF' : '📚 Download PDF Book'}
+                </h3>
+                <p className="text-sm opacity-80">
+                  {language === 'ar' ? 'دليل V3 الكامل للقراءة أوفلاين' : language === 'fr' ? 'Guide V3 complet pour lecture hors-ligne' : 'Complete V3 guide for offline reading'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => alert(language === 'ar' ? 'سيتم تحميل الكتاب قريباً...' : language === 'fr' ? 'Le livre sera téléchargé bientôt...' : 'Book will be downloaded soon...')}
+              data-testid="download-pdf-home"
+              className="w-full mt-4 bg-white text-primary rounded-xl py-3 font-bold hover:shadow-lg transition-all"
+            >
+              {language === 'ar' ? 'تحميل الآن' : language === 'fr' ? 'Télécharger' : 'Download Now'}
+            </button>
+          </motion.div>
+        )}
+
         {/* About Wassim */}
         <div 
           onClick={() => navigate('/about')}
