@@ -363,7 +363,7 @@ const HomePage = () => {
               </div>
             </div>
             <button
-              onClick={() => alert(language === 'ar' ? 'سيتم تحميل الكتاب قريباً...' : language === 'fr' ? 'Le livre sera téléchargé bientôt...' : 'Book will be downloaded soon...')}
+              onClick={() => window.open('https://drive.google.com/file/d/1U8hRtWBynaIeir_IbxUAXIB6yz2B1pr1/view?usp=sharing', '_blank')}
               data-testid="download-pdf-home"
               className="w-full mt-4 bg-white text-primary rounded-xl py-3 font-bold hover:shadow-lg transition-all"
             >
