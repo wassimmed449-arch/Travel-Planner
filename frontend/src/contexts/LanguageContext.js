@@ -41,7 +41,8 @@ export const LanguageProvider = ({ children }) => {
 
   const t = (text) => {
     if (typeof text === 'object' && text !== null) {
-      return text[language] || text['ar'] || text['en'] || '';
+      // Priority: current language -> French fallback -> Arabic fallback
+      return text[language] || text['fr'] || text['ar'] || text['en'] || '';
     }
     return text || '';
   };
