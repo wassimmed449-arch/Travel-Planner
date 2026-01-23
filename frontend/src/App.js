@@ -19,6 +19,8 @@ import ShopPage from "@/pages/ShopPage";
 import DualBotPage from "@/pages/DualBotPage";
 import FoodRoulettePage from "@/pages/FoodRoulettePage";
 import BonePassportPage from "@/pages/BonePassportPage";
+import SoundscapesPage from "@/pages/SoundscapesPage";
+import AnnabaLivePage from "@/pages/AnnabaLivePage";
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
               <Route path="bot" element={<DualBotPage />} />
               <Route path="food-roulette" element={<FoodRoulettePage />} />
               <Route path="passport" element={<BonePassportPage />} />
+              <Route path="soundscapes" element={<SoundscapesPage />} />
+              <Route path="annaba-live" element={<AnnabaLivePage />} />
             </Route>
           </Routes>
         </BrowserRouter>
