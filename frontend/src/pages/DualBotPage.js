@@ -20,7 +20,7 @@ const DualBotPage = () => {
     setIsPremium(PremiumManager.isPremiumActive());
     
     // Initial greeting based on premium status
-    const greeting = isPremium ? getWassimSuperBotGreeting() : getFreeBot Greeting();
+    const greeting = isPremium ? getWassimSuperBotGreeting() : getFreeBotGreeting();
     setMessages([{
       id: 1,
       sender: 'bot',
