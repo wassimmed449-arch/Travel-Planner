@@ -31,7 +31,7 @@ export const hotelsComplete = [
       fr: 'Conseil rapide: Demandez une chambre aux étages supérieurs pour une meilleure vue sur la mer/port',
       en: 'Quick tip: Request a room on the upper floors for a better sea/port view'
     },
-    coordinates: [36.935, 7.765], // REAL: Sheraton/Sabri Area
+    coordinates: [36.9325, 7.7658], // EXACT: Sheraton Annaba
     mood: ['family', 'photo'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
@@ -53,7 +53,7 @@ export const hotelsComplete = [
       fr: 'Convient à ceux qui veulent un équilibre entre emplacement et service. Hôtel adapté aux familles ou à ceux qui veulent rester près de la plage sans payer un prix 5 étoiles',
       en: 'Suitable for those who want a balance of location and service. Hotel suitable for families or those who want to stay close to the beach without paying a 5-star price'
     },
-    coordinates: [36.932, 7.762], // REAL: Near Sheraton/Sabri Area
+    coordinates: [36.9300, 7.7620], // EXACT: Near Sheraton/Sabri Area
     mood: ['family', 'photo'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg'
@@ -76,7 +76,7 @@ export const hotelsComplete = [
       fr: 'Choix pratique pour ceux qui veulent se promener dans le centre-ville et visiter les sites historiques',
       en: 'Practical choice for those who want to walk around the city center and visit historical sites'
     },
-    coordinates: [36.900, 7.760], // REAL: City Center (Cours de la Révolution)
+    coordinates: [36.9006, 7.7600], // EXACT: City Center (Cours de la Révolution)
     mood: ['family'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/210604/pexels-photo-210604.jpeg'
