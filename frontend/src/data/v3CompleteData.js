@@ -185,3 +185,73 @@ export const scanAndGoLinks = [
 ];
 
 // Continue in next file due to length limit...
+
+// ==================== WASSIM AUTHOR INFO ====================
+
+export const wassimAuthor = {
+  name: 'بن فرنان محمد وسيم',
+  nameFr: 'Ben Fernan Mohamed Wassim',
+  nameEn: 'Ben Fernan Mohamed Wassim',
+  age: 23,
+  city: { ar: 'عنابة', fr: 'Annaba', en: 'Annaba' },
+  profession: { 
+    ar: 'مساعد اجتماعي للصحة العمومية', 
+    fr: 'Assistant social en santé publique', 
+    en: 'Public Health Social Assistant' 
+  },
+  education: { 
+    ar: 'طالب ترجمة (إنجليزية، عربية، فرنسية)', 
+    fr: 'Étudiant en traduction (anglais, arabe, français)', 
+    en: 'Translation student (English, Arabic, French)' 
+  },
+  instagram: 'https://www.instagram.com/w.s_proshop/',
+  whatsapp: '+213552664037',
+  baridimobRIP: '00799999002810927704',
+  brand: 'WS ProShop',
+  quote: {
+    ar: 'أفضل شخصياً سرايدي في الشتاء من الصيف. الهدوء والسحب التي تغطي الجبال ورائحة المطر في الغابة تمنحني شعوراً بالسلام لا مثيل له',
+    fr: 'Je préfère personnellement Seraidi en hiver qu\'en été. Le calme, les nuages couvrant les montagnes et l\'odeur de la pluie dans la forêt me donnent un sentiment de paix sans égal',
+    en: 'I personally prefer Seraidi in winter over summer. The calm, the clouds covering the mountains and the smell of rain in the forest give me an unparalleled sense of peace'
+  }
+};
+
+// ==================== SCAN & GO INTERACTIVE LINKS ====================
+
+export const scanAndGoLinks = [
+  {
+    id: 'feedback-beach',
+    title: { ar: '🏖️ أفضل شاطئ زرته؟', fr: '🏖️ Meilleure plage visitée?', en: '🏖️ Best beach visited?' },
+    url: 'https://www.instagram.com/p/DOVolVGiovv/',
+    type: 'instagram'
+  },
+  {
+    id: 'feedback-restaurant',
+    title: { ar: '🍽️ شارك تجربتك مع مطعم', fr: '🍽️ Partagez expérience resto', en: '🍽️ Share restaurant experience' },
+    url: 'https://www.instagram.com/p/DOi24nMCpXt/',
+    type: 'instagram'
+  },
+  {
+    id: 'trip-rating',
+    title: { ar: '⭐ كيف كانت رحلتك؟', fr: '⭐ Comment était votre voyage?', en: '⭐ How was your trip?' },
+    url: 'https://www.instagram.com/p/DOVo7BkCsxU/',
+    type: 'instagram'
+  },
+  {
+    id: 'book-review',
+    title: { ar: '📖 رأيك الصريح بالكتاب؟', fr: '📖 Avis sur le livre?', en: '📖 Book review?' },
+    url: 'https://www.instagram.com/p/DOi2masCg4r/',
+    type: 'instagram'
+  },
+  {
+    id: 'google-form',
+    title: { ar: '📝 استبيان سريع', fr: '📝 Sondage rapide', en: '📝 Quick survey' },
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSc3QNTXOfasFZWtpNd7a8W3UUTk88ChEiOxU7rQGEkaoGEXYQ/viewform',
+    type: 'form'
+  },
+  {
+    id: 'google-maps',
+    title: { ar: '🗺️ خريطة وسيم الكاملة', fr: '🗺️ Carte complète Wassim', en: '🗺️ Wassim\'s complete map' },
+    url: 'https://www.google.com/maps/d/u/0/edit?mid=1kJixoto0ab7MwXqGPHMP7zqsnAjGpuE',
+    type: 'map'
+  }
+];
