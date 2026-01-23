@@ -31,7 +31,7 @@ export const hotelsComplete = [
       fr: 'Conseil rapide: Demandez une chambre aux étages supérieurs pour une meilleure vue sur la mer/port',
       en: 'Quick tip: Request a room on the upper floors for a better sea/port view'
     },
-    coordinates: [36.9325, 7.7658], // EXACT: Sheraton Annaba
+    coordinates: [36.9325, 7.7658], // EXACT: Sheraton Annaba Hotel
     mood: ['family', 'photo'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
@@ -76,7 +76,7 @@ export const hotelsComplete = [
       fr: 'Choix pratique pour ceux qui veulent se promener dans le centre-ville et visiter les sites historiques',
       en: 'Practical choice for those who want to walk around the city center and visit historical sites'
     },
-    coordinates: [36.9006, 7.7600], // EXACT: City Center (Cours de la Révolution)
+    coordinates: [36.9006, 7.7600], // EXACT: City Center (Cours de la Révolution) - Verified
     mood: ['family'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/210604/pexels-photo-210604.jpeg'
@@ -105,7 +105,7 @@ export const hotelsComplete = [
       fr: 'Les prix varient selon les dates et le type de chambre',
       en: 'Prices vary depending on dates and room type'
     },
-    coordinates: [36.915, 7.665], // REAL: Seraidi (Mount Edough)
+    coordinates: [36.9147, 7.6622], // EXACT: Seraidi (Hotel El Mountazah)
     mood: ['photo', 'quiet'],
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'

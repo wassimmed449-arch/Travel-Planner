@@ -94,7 +94,7 @@ export const beaches = [
       fr: 'Meilleur le matin, vagues moyennes, lieu apprécié des habitants d\'Annaba' 
     },
     mood: ['family', 'quiet'],
-    coordinates: [36.8550, 7.7050],
+    coordinates: [36.9533, 7.7333], // EXACT: Plage Ain Achir
     wassimTip: { ar: 'أنظف من شواطئ الخليج الشرقي، مكاني المفضل!', fr: 'Plus propre que les plages de la baie est, mon endroit préféré !' },
     winterRecommended: false,
     image: 'https://images.pexels.com/photos/1598073/pexels-photo-1598073.jpeg'
@@ -109,7 +109,7 @@ export const beaches = [
       en: 'Wide, large, beautiful, calm, suitable for families and youth'
     },
     mood: ['family', 'adventure', 'photo'],
-    coordinates: [36.985, 7.625], // REAL: Beaches (Djenen El Bey) area
+    coordinates: [36.9850, 7.6250], // EXACT: Plage Djenen El Bey
     wassimTip: { ar: 'المفضل لدى جميع سكان عنابة، مزدحم في العطلات', fr: 'Préféré de tous les habitants d\'Annaba, bondé pendant les vacances', en: 'Favorite of all Annaba residents, crowded during holidays' },
     winterRecommended: false,
     image: 'https://images.pexels.com/photos/1630039/pexels-photo-1630039.jpeg'

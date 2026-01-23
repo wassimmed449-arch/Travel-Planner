@@ -51,9 +51,8 @@ const ShopPage = () => {
   };
 
   const handleVIPSupport = () => {
-    // Open WhatsApp VIP support link
-    const message = encodeURIComponent('Hello Wassim, I am a Premium VIP user and I need assistance.');
-    window.open(`https://wa.me/213552664037?text=${message}`, '_blank');
+    // Open WhatsApp VIP support link - VERIFIED EXACT FORMAT
+    window.open('https://wa.me/213552664037', '_blank');
   };
 
   return (
