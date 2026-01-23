@@ -6,10 +6,6 @@ import { wassimAuthor } from '../data/v3EnhancedData';
 const BrandingFooter = () => {
   const { language } = useLanguage();
 
-  const openInstagram = () => {
-    window.open(wassimAuthor.instagram, '_blank');
-  };
-
   return (
     <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border-t border-border/30 py-4 px-6">
       <div className="max-w-md mx-auto flex items-center justify-between">
@@ -29,14 +25,16 @@ const BrandingFooter = () => {
           </div>
         </div>
 
-        <button
-          onClick={openInstagram}
+        <a
+          href={wassimAuthor.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
           data-testid="footer-instagram"
           className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-pink-500 to-purple-500 text-white rounded-full text-xs font-bold hover:shadow-lg transition-all active:scale-95"
         >
           <Instagram className="w-3.5 h-3.5" />
           <span>@ws_pro_shop</span>
-        </button>
+        </a>
       </div>
     </div>
   );
