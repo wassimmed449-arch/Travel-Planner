@@ -402,7 +402,7 @@ export const hotels = [
     address: { ar: 'بوليفارد فيكتور هوجو', fr: 'Boulevard Victor Hugo' },
     amenities: { ar: 'مطعمان، مسبح خارجي، خدمات الأعمال', fr: 'Deux restaurants, piscine extérieure, services affaires' },
     mood: ['family'],
-    coordinates: [36.9000, 7.7620],
+    coordinates: [36.9325, 7.7658], // EXACT: Sheraton Annaba Hotel
     wassimTip: { ar: 'موقع مركزي بالقرب من الكورنيش، اطلب غرفة في الطوابق العليا', fr: 'Emplacement central près de la Corniche, demander chambre étages supérieurs' },
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
@@ -430,7 +430,7 @@ export const hotels = [
     address: { ar: 'ساحة الثورة، عنابة', fr: 'Cours de la Révolution, Annaba' },
     amenities: { ar: 'قلب المدينة، قرب المعالم التاريخية', fr: 'Cœur de ville, près monuments historiques' },
     mood: ['family'],
-    coordinates: [36.9010, 7.7640],
+    coordinates: [36.9006, 7.7600], // EXACT: City Center (Cours de la Révolution)
     wassimTip: { ar: 'اختيار عملي لاستكشاف وسط المدينة سيراً', fr: 'Choix pratique pour explorer le centre à pied' },
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/210604/pexels-photo-210604.jpeg'
@@ -445,7 +445,7 @@ export const hotels = [
     address: { ar: 'سرايدي، إطلالة على البحر', fr: 'Seraidi, vue sur la mer' },
     amenities: { ar: 'تحفة معمارية من الستينات', fr: 'Chef-d\'œuvre architectural des années 60' },
     mood: ['photo', 'quiet'],
-    coordinates: [36.8350, 7.6850],
+    coordinates: [36.9147, 7.6622], // EXACT: Seraidi (Hotel El Mountazah)
     wassimTip: { ar: 'معمار رائع وإطلالة خلابة', fr: 'Architecture magnifique et vue imprenable' },
     winterRecommended: true,
     image: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'
