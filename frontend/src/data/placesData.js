@@ -101,15 +101,16 @@ export const beaches = [
   },
   {
     id: 'jnan-bey',
-    name: { ar: 'شاطئ جنان البي', fr: 'Jnan Bey Beach' },
+    name: { ar: 'شاطئ جنان البي', fr: 'Jnan Bey Beach', en: 'Djenen El Bey Beach' },
     category: 'beach',
     description: { 
       ar: 'واسع، كبير، جميل، هادئ، مناسب للعائلات والشباب', 
-      fr: 'Large, grand, beau, calme, convient aux familles et aux jeunes' 
+      fr: 'Large, grand, beau, calme, convient aux familles et aux jeunes',
+      en: 'Wide, large, beautiful, calm, suitable for families and youth'
     },
     mood: ['family', 'adventure', 'photo'],
-    coordinates: [36.8400, 7.6900],
-    wassimTip: { ar: 'المفضل لدى جميع سكان عنابة، مزدحم في العطلات', fr: 'Préféré de tous les habitants d\'Annaba, bondé pendant les vacances' },
+    coordinates: [36.985, 7.625], // REAL: Beaches (Djenen El Bey) area
+    wassimTip: { ar: 'المفضل لدى جميع سكان عنابة، مزدحم في العطلات', fr: 'Préféré de tous les habitants d\'Annaba, bondé pendant les vacances', en: 'Favorite of all Annaba residents, crowded during holidays' },
     winterRecommended: false,
     image: 'https://images.pexels.com/photos/1630039/pexels-photo-1630039.jpeg'
   },
