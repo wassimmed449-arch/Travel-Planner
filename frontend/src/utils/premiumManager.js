@@ -1,42 +1,88 @@
 // ================================================================================================
-// PREMIUM ACCESS SYSTEM - V3.0 ULTIMATE
-// Manual BaridiMob Payment + WhatsApp Receipt + Key Validation
+// PREMIUM ACCESS SYSTEM - V3.0 ULTIMATE - LIFETIME ACCESS
+// Manual BaridiMob Payment + WhatsApp Receipt + Key Validation + Magic Link
 // ================================================================================================
 
 const PREMIUM_KEY_PREFIX = 'annaba_premium_v3_';
-const PREMIUM_DURATION_MONTHS = 6;
 const PREMIUM_PRICE_DA = 500;
 
-// Valid premium keys (in production, server-validated or dynamically generated)
+// MAGIC LINK CODE - The secret activation code
+const MAGIC_LINK_CODE = 'ANNABA-VIP-23-W';
+
+// Valid premium keys (including magic link code for manual entry)
 const VALID_PREMIUM_KEYS = [
   'ANNABA2025ULTIMATE',
   'WASSIM500KEY',
   'BONETRAVEL2025',
   'WSPR0SH0P',
   'ANNABA6MONTHS',
-  // More keys can be added
+  'ANNABA-VIP-23-W', // Magic Link Code (also works manually)
 ];
 
 export const PremiumManager = {
-  // Check if user has active premium access
+  // Constants exposed for UI
+  PRICE: 500,
+  CURRENCY: 'DA',
+  ACCESS_TYPE: 'LIFETIME', // Changed from months to lifetime
+
+  // Check if user has active premium access (LIFETIME = no expiry check)
   isPremiumActive: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return false;
     
     try {
       const data = JSON.parse(premiumData);
+      
+      // Lifetime access - just check if activated
+      if (data.lifetime === true) {
+        return true;
+      }
+      
+      // Legacy support - check expiry for old activations
       const expiryDate = new Date(data.expiryDate);
       const now = new Date();
-      
       return now < expiryDate;
     } catch {
       return false;
     }
   },
 
-  // Activate premium with a key
+  // Activate premium via Magic Link
+  activateMagicLink: (code) => {
+    const normalizedCode = code.toUpperCase().trim();
+    
+    if (normalizedCode !== MAGIC_LINK_CODE) {
+      return { success: false };
+    }
+
+    const now = new Date();
+    const premiumData = {
+      activated: now.toISOString(),
+      lifetime: true, // LIFETIME ACCESS
+      key: 'MAGIC_LINK',
+      version: '3.0-LIFETIME'
+    };
+
+    localStorage.setItem(`${PREMIUM_KEY_PREFIX}access`, JSON.stringify(premiumData));
+    
+    return { 
+      success: true, 
+      message: {
+        ar: 'تم تفعيل الوصول المميز مدى الحياة بنجاح! 🎉',
+        fr: 'Accès Premium à vie activé avec succès! 🎉',
+        en: 'Lifetime Premium Access activated successfully! 🎉'
+      }
+    };
+  },
+
+  // Activate premium with a key (manual entry)
   activatePremiumKey: (key) => {
     const normalizedKey = key.toUpperCase().trim().replace(/\s+/g, '');
+    
+    // Check if it's the magic link code
+    if (normalizedKey === MAGIC_LINK_CODE.replace(/-/g, '') || normalizedKey === MAGIC_LINK_CODE) {
+      return PremiumManager.activateMagicLink(MAGIC_LINK_CODE);
+    }
     
     if (!VALID_PREMIUM_KEYS.includes(normalizedKey)) {
       return { 
@@ -51,14 +97,11 @@ export const PremiumManager = {
     }
 
     const now = new Date();
-    const expiryDate = new Date(now);
-    expiryDate.setMonth(expiryDate.getMonth() + PREMIUM_DURATION_MONTHS);
-
     const premiumData = {
       activated: now.toISOString(),
-      expiryDate: expiryDate.toISOString(),
+      lifetime: true, // All keys now give LIFETIME access
       key: normalizedKey,
-      version: '3.0'
+      version: '3.0-LIFETIME'
     };
 
     localStorage.setItem(`${PREMIUM_KEY_PREFIX}access`, JSON.stringify(premiumData));
@@ -66,39 +109,53 @@ export const PremiumManager = {
     return { 
       success: true, 
       message: {
-        ar: 'تم تفعيل الباقة الشاملة بنجاح! 🎉',
-        fr: 'Forfait Ultimate activé avec succès! 🎉',
-        en: 'Ultimate Bundle activated successfully! 🎉'
-      },
-      expiryDate: expiryDate 
+        ar: 'تم تفعيل الوصول المميز مدى الحياة بنجاح! 🎉',
+        fr: 'Accès Premium à vie activé avec succès! 🎉',
+        en: 'Lifetime Premium Access activated successfully! 🎉'
+      }
     };
   },
 
-  // Get premium expiry date
-  getExpiryDate: () => {
+  // Get premium status text
+  getStatusText: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return null;
     
     try {
       const data = JSON.parse(premiumData);
-      return new Date(data.expiryDate);
+      if (data.lifetime) {
+        return {
+          ar: 'وصول مدى الحياة ♾️',
+          fr: 'Accès à vie ♾️',
+          en: 'Lifetime Access ♾️'
+        };
+      }
+      return null;
     } catch {
       return null;
     }
   },
 
-  // Get days remaining
+  // Get days remaining (returns Infinity for lifetime)
   getDaysRemaining: () => {
-    if (!PremiumManager.isPremiumActive()) return 0;
+    const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
+    if (!premiumData) return 0;
     
-    const expiryDate = PremiumManager.getExpiryDate();
-    if (!expiryDate) return 0;
-    
-    const now = new Date();
-    const diffTime = expiryDate - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    return diffDays > 0 ? diffDays : 0;
+    try {
+      const data = JSON.parse(premiumData);
+      if (data.lifetime) {
+        return Infinity; // Lifetime access
+      }
+      
+      // Legacy support
+      const expiryDate = new Date(data.expiryDate);
+      const now = new Date();
+      const diffTime = expiryDate - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays > 0 ? diffDays : 0;
+    } catch {
+      return 0;
+    }
   },
 
   // Get activation date
@@ -206,64 +263,28 @@ export const PremiumManager = {
         fr: 'Contact direct via WhatsApp avec Wassim personnellement', 
         en: 'Direct contact via WhatsApp with Wassim personally' 
       }
-    },
-    {
-      id: 'offline-maps',
-      icon: '🗺️',
-      premiumOnly: true,
-      name: { 
-        ar: 'خرائط مفصلة أوفلاين', 
-        fr: 'Cartes détaillées hors ligne', 
-        en: 'Detailed Offline Maps' 
-      },
-      description: { 
-        ar: 'خرائط بدون إنترنت مع جميع الأماكن محددة', 
-        fr: 'Cartes sans Internet avec tous les lieux marqués', 
-        en: 'Offline maps with all places marked' 
-      }
     }
   ],
 
-  // Payment info for BaridiMob
+  // Payment information
   getPaymentInfo: () => ({
-    method: 'BaridiMob',
-    rip: '00799999002810927704',
+    price: PREMIUM_PRICE_DA,
+    currency: 'DA',
+    accessType: 'LIFETIME',
     recipient: 'Benfernane Mohamed Ouassim',
-    amount: PREMIUM_PRICE_DA,
-    currency: 'DZD',
+    rip: '00799999002810927704',
     whatsappNumber: '213552664037',
     whatsappMessageTemplate: {
-      ar: `مرحباً وسيم،\n\nلقد قمت بتحويل ${PREMIUM_PRICE_DA} دج للحصول على الباقة الشاملة لتطبيق عنابة.\n\nRIP: 00799999002810927704\n\nمرفق إيصال الدفع.\n\nشكراً! 🙏`,
-      fr: `Bonjour Wassim,\n\nJ'ai transféré ${PREMIUM_PRICE_DA} DA pour obtenir le forfait Ultimate de l'app Annaba.\n\nRIP: 00799999002810927704\n\nReçu de paiement joint.\n\nMerci! 🙏`,
-      en: `Hello Wassim,\n\nI have transferred ${PREMIUM_PRICE_DA} DA to get the Ultimate bundle for the Annaba app.\n\nRIP: 00799999002810927704\n\nPayment receipt attached.\n\nThank you! 🙏`
+      ar: 'مرحباً وسيم! لقد قمت بالدفع عبر BaridiMob للحصول على الوصول المميز. إليك إيصال الدفع:',
+      fr: 'Bonjour Wassim! J\'ai effectué le paiement via BaridiMob pour l\'accès Premium. Voici mon reçu:',
+      en: 'Hello Wassim! I made the payment via BaridiMob for Premium access. Here is my receipt:'
     }
   }),
 
-  // Deactivate premium (for testing or user request)
-  deactivatePremium: () => {
+  // Revoke premium (for testing)
+  revokePremium: () => {
     localStorage.removeItem(`${PREMIUM_KEY_PREFIX}access`);
-    return { success: true };
-  },
-
-  // Constants
-  PRICE: PREMIUM_PRICE_DA,
-  DURATION_MONTHS: PREMIUM_DURATION_MONTHS,
-  CURRENCY: 'DZD'
-};
-
-// Premium feature checker helper
-export const checkPremiumFeature = (featureId) => {
-  if (!PremiumManager.isPremiumActive()) {
-    return {
-      hasAccess: false,
-      message: {
-        ar: 'هذه الميزة متاحة فقط للأعضاء المميزين',
-        fr: 'Cette fonctionnalité est disponible uniquement pour les membres premium',
-        en: 'This feature is available only for premium members'
-      }
-    };
   }
-  return { hasAccess: true };
 };
 
 export default PremiumManager;
