@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -8,18 +8,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 const StoriesPage = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [stories, setStories] = useState([]);
+  
+  // Use lazy initialization
+  const [stories, setStories] = useState(() => getUserStories());
   const [showAddForm, setShowAddForm] = useState(false);
   const [newStory, setNewStory] = useState({ title: '', description: '', imageUrl: '' });
 
-  useEffect(() => {
-    loadStories();
-  }, []);
-
-  const loadStories = () => {
+  const loadStories = useCallback(() => {
     const loaded = getUserStories();
     setStories(loaded);
-  };
+  }, []);
 
   const handleAddStory = () => {
     if (!newStory.title.trim()) return;
