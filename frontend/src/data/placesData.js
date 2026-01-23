@@ -859,14 +859,16 @@ export const transportInfo = {
 };
 
 export const wassimProfile = {
-  name: { ar: 'وسيم', fr: 'Wassim' },
+  name: { ar: 'بن فرنان محمد وسيم', fr: 'Benfernane Mohamed Ouassim', en: 'Benfernane Mohamed Ouassim' },
   bio: {
-    ar: 'مؤلف دليل السفر هذا، عامل اجتماعي في مركز مكافحة السرطان، ودارس في كلية الآداب واللغات في البوني. شغوف بعنابة وتاريخها وثقافتها',
-    fr: 'Auteur de ce guide de voyage, travailleur social au Centre Anti-Cancer, et étudiant à la Faculté des Lettres et Langues d\'El Bouni. Passionné par Annaba, son histoire et sa culture'
+    ar: 'أنا بن فرنان محمد وسيم شاب عنابي في 23 من عمري، ولدت وترعرعت في هذه المدينة التي أحبها جدًا، لدرجة أنني اخترتها عنوانًا لأول كتاب قمت به على الإطلاق. حاصل على اثنين بكالوريوس، وأعمل كمساعد اجتماعي للصحة العمومية في ميدان الشبه طبي، حيث أتعامل مع الشباب والكبار في السن وأفهم تحدياتهم اليومية. في الوقت نفسه، أنا طالب تخصص الترجمة التحريرية والتفسيرية باللغات الإنجليزية والعربية والفرنسية، ما يمنحني القدرة على نقل الأفكار بدقة نوعا ما واجادة للغات. أحب المعلوماتية والتطور التكنولوجي، وأسعى دائمًا لأن أكون شابًا طموحًا يقدم محتوى ممتع ومفيد للآخرين. أتمنى أن يلقى هذا الدليل إعجابكم وفائدتكم، وأن تجدوا فيه جميع المعلومات التي تستحقونها.',
+    fr: 'Je suis Benfernane Mohamed Ouassim, un jeune d\'Annaba de 23 ans, né et élevé dans cette ville que j\'aime beaucoup, au point que je l\'ai choisie comme titre de mon tout premier livre. Titulaire de deux licences, je travaille comme assistant social en santé publique dans le domaine paramédical, où je traite avec les jeunes et les personnes âgées et comprends leurs défis quotidiens. En même temps, je suis étudiant en traduction écrite et interprétation dans les langues anglaise, arabe et française, ce qui me donne la capacité de transmettre des idées avec une certaine précision et maîtrise des langues. J\'aime l\'informatique et le développement technologique, et je m\'efforce toujours d\'être un jeune ambitieux qui fournit un contenu agréable et utile aux autres. J\'espère que ce guide vous plaira et vous sera utile, et que vous y trouverez toutes les informations que vous méritez.',
+    en: 'I am Benfernane Mohamed Ouassim, a 23-year-old young man from Annaba, born and raised in this city that I love very much, to the point that I chose it as the title of my very first book. Holder of two bachelor\'s degrees, I work as a social assistant in public health in the paramedical field, where I deal with young people and the elderly and understand their daily challenges. At the same time, I am a student of written translation and interpretation in English, Arabic and French languages, which gives me the ability to convey ideas with some accuracy and language proficiency. I love computer science and technological development, and I always strive to be an ambitious young man who provides enjoyable and useful content to others. I hope this guide will please you and be useful to you, and that you will find in it all the information you deserve.'
   },
   quote: {
     ar: 'أفضل شخصياً سرايدي في الشتاء من الصيف. الهدوء والسحب التي تغطي الجبال ورائحة المطر في الغابة تمنحني شعوراً بالسلام لا مثيل له',
-    fr: 'Je préfère personnellement Seraidi en hiver qu\'en été. Le calme, les nuages couvrant les montagnes et l\'odeur de la pluie dans la forêt me donnent un sentiment de paix sans égal'
+    fr: 'Je préfère personnellement Seraidi en hiver qu\'en été. Le calme, les nuages couvrant les montagnes et l\'odeur de la pluie dans la forêt me donnent un sentiment de paix sans égal',
+    en: 'I personally prefer Seraidi in winter over summer. The calm, the clouds covering the mountains and the smell of rain in the forest give me an unparalleled sense of peace'
   },
   favorites: {
     beaches: ['jnan-bey', 'plage-el-louh', 'akacha'],
