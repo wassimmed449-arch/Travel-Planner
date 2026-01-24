@@ -1,16 +1,27 @@
 {
-  "short_name": "Annaba Travel",
-  "name": "Travel Planner Annaba - Guide de Wassim",
+  "short_name": "Annaba Guide",
+  "name": "دليل عنابة Annaba Guide",
+  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, unlock VIP hotel offers, and discover historical secrets. Your complete pocket guide to the Jewel of the East.",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#003459",
-  "background_color": "#fafafa",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
   "orientation": "portrait"
 }
