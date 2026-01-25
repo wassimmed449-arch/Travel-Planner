@@ -1,8 +1,15 @@
 {
   "short_name": "Annaba Guide",
   "name": "دليل عنابة Annaba Guide",
-  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, and discover historical secrets.",
-  "categories": ["travel", "lifestyle", "navigation"],
+  "description": "The ultimate AI-powered travel companion for Annaba.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["travel", "lifestyle"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -13,39 +20,42 @@
       "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
-  "start_url": "/",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
-  "orientation": "portrait",
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
   "shortcuts": [
     {
-      "name": "Explore Hotels",
-      "short_name": "Hotels",
-      "description": "Find best places to stay",
+      "name": "Hotels",
       "url": "/hotels",
       "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Map Guide",
-      "short_name": "Map",
-      "description": "View Annaba Map",
+      "name": "Map",
       "url": "/map",
       "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
     }
   ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "screenshots": [
     {
       "src": "screenshot1.png",
