@@ -2,64 +2,49 @@
   "short_name": "Annaba Guide",
   "name": "دليل عنابة Annaba Guide",
   "description": "The ultimate AI-powered travel companion for Annaba.",
-  "id": "/index.html",
-  "start_url": "/index.html",
+  "id": "?source=pwa",
+  "start_url": ".",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "scope": "/",
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["travel", "lifestyle"],
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
-    }
+    { "src": "favicon.ico", "sizes": "64x64", "type": "image/x-icon" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "maskable" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "shortcuts": [
+    { "name": "Hotels", "url": "/hotels", "icons": [{ "src": "logo192.png", "sizes": "192x192" }] },
+    { "name": "Map", "url": "/map", "icons": [{ "src": "logo192.png", "sizes": "192x192" }] }
+  ],
+  "protocol_handlers": [
+    { "protocol": "web+annaba", "url": "/map?type=%s" }
+  ],
+  "file_handlers": [
+    { "action": "/", "accept": { "application/json": [".json"] } }
   ],
   "screenshots": [
     {
-      "src": "mobile-shot.png",
+      "src": "screenshot_mobile.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "desktop-shot.png",
+      "src": "screenshot_desktop.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Hotels",
-      "url": "/hotels",
-      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
     }
   ]
 }
