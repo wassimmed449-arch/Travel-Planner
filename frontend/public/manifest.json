@@ -1,7 +1,7 @@
 {
   "short_name": "Annaba Guide",
   "name": "دليل عنابة Annaba Guide",
-  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, unlock VIP hotel offers, and discover historical secrets. Your complete pocket guide to the Jewel of the East.",
+  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, unlock VIP hotel offers, and discover historical secrets.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -23,5 +23,35 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "shortcuts": [
+    {
+      "name": "Explore Hotels",
+      "short_name": "Hotels",
+      "description": "Find best places to stay",
+      "url": "/hotels",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Map Guide",
+      "short_name": "Map",
+      "description": "View Annaba Map",
+      "url": "/map",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
