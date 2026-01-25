@@ -1,7 +1,8 @@
 {
   "short_name": "Annaba Guide",
   "name": "دليل عنابة Annaba Guide",
-  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, unlock VIP hotel offers, and discover historical secrets.",
+  "description": "The ultimate AI-powered travel companion for Annaba. Explore interactive maps, chat with a smart local guide, and discover historical secrets.",
+  "categories": ["travel", "lifestyle", "navigation"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,19 +12,24 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "shortcuts": [
     {
       "name": "Explore Hotels",
