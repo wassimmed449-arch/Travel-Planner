@@ -104,6 +104,66 @@ const HomePage = () => {
           </motion.div>
         )}
 
+        {/* Wassim AI Super Bot - Premium Feature */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onClick={() => navigate('/wassim-ai')}
+          className={`relative rounded-3xl p-6 cursor-pointer hover:shadow-2xl transition-all overflow-hidden ${
+            isPremium 
+              ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600' 
+              : 'bg-gradient-to-br from-slate-800 to-slate-900 border border-amber-500/30'
+          }`}
+          data-testid="wassim-ai-button"
+        >
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-300/20 rounded-full blur-xl" />
+          
+          <div className="relative flex items-center gap-4">
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${
+              isPremium ? 'bg-white/20' : 'bg-amber-500/20'
+            }`}>
+              <span className="text-4xl">🤖</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className={`font-bold text-lg ${isPremium ? 'text-white' : 'text-amber-400'}`}>
+                  Wassim AI Super Guide
+                </h3>
+                {isPremium && <span className="text-white/80">💎</span>}
+                {!isPremium && <Crown className="w-4 h-4 text-amber-500" />}
+              </div>
+              <p className={`text-sm ${isPremium ? 'text-white/80' : 'text-slate-400'}`}>
+                {language === 'ar' 
+                  ? 'اسأل وسيم أي سؤال عن عنابة!' 
+                  : language === 'fr'
+                  ? 'Posez n\'importe quelle question!'
+                  : 'Ask anything about Annaba!'}
+              </p>
+            </div>
+            <div className={`text-2xl ${isPremium ? 'text-white' : 'text-amber-500'}`}>
+              {isPremium ? '→' : '🔒'}
+            </div>
+          </div>
+          
+          {/* Features preview */}
+          <div className={`mt-4 pt-4 border-t ${isPremium ? 'border-white/20' : 'border-amber-500/20'} grid grid-cols-3 gap-2`}>
+            <div className={`text-center text-xs ${isPremium ? 'text-white/70' : 'text-slate-500'}`}>
+              <span className="block text-lg mb-1">🧠</span>
+              {language === 'ar' ? 'ذكاء اصطناعي' : 'AI Powered'}
+            </div>
+            <div className={`text-center text-xs ${isPremium ? 'text-white/70' : 'text-slate-500'}`}>
+              <span className="block text-lg mb-1">🗣️</span>
+              {language === 'ar' ? 'دارجة' : 'Darja'}
+            </div>
+            <div className={`text-center text-xs ${isPremium ? 'text-white/70' : 'text-slate-500'}`}>
+              <span className="block text-lg mb-1">🤫</span>
+              {language === 'ar' ? 'أسرار محلية' : 'Local Secrets'}
+            </div>
+          </div>
+        </motion.div>
+
         <div className="grid grid-cols-2 gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
