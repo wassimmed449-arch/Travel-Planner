@@ -125,6 +125,45 @@ async def get_status_checks():
     
     return status_checks
 
+# Wassim AI Super Bot Chat Endpoint
+@api_router.post("/wassim-chat", response_model=ChatResponse)
+async def wassim_chat(request: ChatRequest):
+    """
+    Wassim AI Super Bot - Premium Feature
+    Uses Gemini API with local Annaba knowledge
+    """
+    try:
+        session_id = request.session_id
+        
+        # Get or create chat session
+        if session_id not in chat_sessions:
+            chat_sessions[session_id] = LlmChat(
+                api_key=os.environ.get('GEMINI_API_KEY'),
+                session_id=session_id,
+                system_message=WASSIM_SYSTEM_PROMPT
+            ).with_model("gemini", "gemini-2.5-flash")
+        
+        chat = chat_sessions[session_id]
+        
+        # Create user message
+        user_message = UserMessage(text=request.message)
+        
+        # Get AI response
+        response = await chat.send_message(user_message)
+        
+        return ChatResponse(
+            response=response,
+            session_id=session_id
+        )
+        
+    except Exception as e:
+        logger.error(f"Wassim AI Error: {str(e)}")
+        # Fallback response in case of API error
+        return ChatResponse(
+            response="Ya khoya, 3andna mochkla technique! Jarreb mara okhra. 🙏",
+            session_id=request.session_id
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
