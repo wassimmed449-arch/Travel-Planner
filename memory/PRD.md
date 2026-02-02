@@ -5,9 +5,43 @@ Build a high-end, Mobile-First Progressive Web App (PWA) called "Travel Planner 
 
 ## Core Tech Stack
 - **Frontend**: React, Tailwind CSS, Lucide Icons, Framer Motion, React-Leaflet
-- **Data Storage**: LocalStorage (client-side only - no backend)
+- **Backend**: FastAPI with emergentintegrations for AI
+- **AI**: Google Gemini API (gemini-2.5-flash) via emergentintegrations
+- **Data Storage**: LocalStorage (client-side), MongoDB (backend)
 - **Maps**: Leaflet.js + OpenStreetMap
 - **Toast Notifications**: Sonner
+
+---
+
+## V3.1.0 - WASSIM AI SUPER BOT ✅ (February 2026)
+
+### NEW PREMIUM FEATURE: Wassim AI Super Guide 🤖💎
+
+**Backend Implementation:**
+- API Endpoint: `POST /api/wassim-chat`
+- AI Model: Google Gemini (gemini-2.5-flash) via emergentintegrations
+- API Key: Stored in `/app/backend/.env` as `GEMINI_API_KEY`
+- Session Management: In-memory chat sessions with unique IDs
+
+**Frontend Implementation:**
+- Page: `/app/frontend/src/pages/WassimAIPage.js`
+- Route: `/wassim-ai`
+- Paywall: Beautiful locked screen for non-premium users
+- Chat UI: WhatsApp-style with animated typing indicator
+
+**AI Personality - "Wassim":**
+- Local "wlid bled" personality from Annaba
+- Speaks Algerian Darja by default, switches based on user language
+- Has secret local knowledge (best Bourek, hidden beaches, taxi prices)
+- Knows Annaba history (including Boudiaf assassination 1992)
+- Refuses to answer non-Annaba topics politely
+
+**Secret Knowledge Base:**
+- Best Bourek: Amm Salim near the port
+- Hidden beach: Oued Bagrat (quieter than Seraidi)
+- Taxi from airport: Max 1000 DA
+- Best Zlabia: Chez Hamid in old market
+- Roman ruins at Hippo Regius (best for photos)
 
 ---
 
