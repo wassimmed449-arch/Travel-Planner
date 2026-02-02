@@ -27,6 +27,7 @@ import ScanAndGoPage from "@/pages/ScanAndGoPage";
 import ServicesPage from "@/pages/ServicesPage";
 import HistoryPage from "@/pages/HistoryPage";
 import IntroductionPage from "@/pages/IntroductionPage";
+import WassimAIPage from "@/pages/WassimAIPage";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
               <Route path="services" element={<ServicesPage />} />
               <Route path="history" element={<HistoryPage />} />
               <Route path="introduction" element={<IntroductionPage />} />
+              <Route path="wassim-ai" element={<WassimAIPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
