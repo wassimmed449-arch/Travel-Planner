@@ -9,11 +9,14 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+import google.generativeai as genai
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Configure Google Generative AI with search grounding
+genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
