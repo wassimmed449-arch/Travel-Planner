@@ -185,19 +185,16 @@ async def get_status_checks():
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses Gemini API with local Annaba knowledge base
+    Uses Gemini API with Google Search grounding for real-time info
     """
     try:
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
         
-        # Get or create chat session
+        # Get or create chat session with Google Search enabled
         if session_id not in chat_sessions:
-            chat_sessions[session_id] = LlmChat(
-                api_key=os.environ.get('GEMINI_API_KEY'),
-                session_id=session_id,
-                system_message=WASSIM_SYSTEM_PROMPT
-            ).with_model("gemini", "gemini-2.5-flash")
+            model = get_gemini_model()
+            chat_sessions[session_id] = model.start_chat(history=[])
         
         chat = chat_sessions[session_id]
         
@@ -205,18 +202,15 @@ async def wassim_chat(request: ChatRequest):
         message_text = request.message
         if not is_first_message:
             # Add instruction to not repeat greeting
-            message_text = f"[لا تكرر التحية - هذه ليست أول رسالة] {request.message}"
+            message_text = f"[هذه ليست أول رسالة - لا تكرر التحية، أجب مباشرة] {request.message}"
         else:
             greeted_sessions.add(session_id)
         
-        # Create user message
-        user_message = UserMessage(text=message_text)
-        
-        # Get AI response
-        response = await chat.send_message(user_message)
+        # Send message and get response
+        response = chat.send_message(message_text)
         
         return ChatResponse(
-            response=response,
+            response=response.text,
             session_id=session_id
         )
         
@@ -225,7 +219,7 @@ async def wassim_chat(request: ChatRequest):
         logger.error(f"Wassim AI Error: {error_msg}")
         
         # Check for budget/quota errors - use smart fallback system
-        if "budget" in error_msg.lower() or "quota" in error_msg.lower() or "exceeded" in error_msg.lower() or "limit" in error_msg.lower():
+        if "budget" in error_msg.lower() or "quota" in error_msg.lower() or "exceeded" in error_msg.lower() or "limit" in error_msg.lower() or "resource" in error_msg.lower():
             # Use smart fallback response based on the user's question
             fallback = get_fallback_response(request.message)
             return ChatResponse(
