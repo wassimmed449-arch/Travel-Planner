@@ -216,10 +216,12 @@ async def wassim_chat(request: ChatRequest):
         error_msg = str(e)
         logger.error(f"Wassim AI Error: {error_msg}")
         
-        # Check for budget/quota errors
-        if "budget" in error_msg.lower() or "quota" in error_msg.lower() or "exceeded" in error_msg.lower():
+        # Check for budget/quota errors - use smart fallback system
+        if "budget" in error_msg.lower() or "quota" in error_msg.lower() or "exceeded" in error_msg.lower() or "limit" in error_msg.lower():
+            # Use smart fallback response based on the user's question
+            fallback = get_fallback_response(request.message)
             return ChatResponse(
-                response="يا خويا، للأسف الرصيد خلص اليوم! 💫 جرب غداً وراح نكون هنا. في الوقت الحالي، تقدر تستخدم المعلومات الموجودة في التطبيق.",
+                response=fallback,
                 session_id=request.session_id
             )
         
