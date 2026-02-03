@@ -182,12 +182,11 @@ async def wassim_chat(request: ChatRequest):
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
         
-        # Get or create chat session with Google Search enabled
+        # Get or create chat session history
         if session_id not in chat_sessions:
-            model = get_gemini_model()
-            chat_sessions[session_id] = model.start_chat(history=[])
+            chat_sessions[session_id] = []
         
-        chat = chat_sessions[session_id]
+        history = chat_sessions[session_id]
         
         # Modify user message to include context about greeting
         message_text = request.message
@@ -197,11 +196,24 @@ async def wassim_chat(request: ChatRequest):
         else:
             greeted_sessions.add(session_id)
         
-        # Send message and get response
-        response = chat.send_message(message_text)
+        # Add user message to history
+        history.append(types.Content(role="user", parts=[types.Part(text=message_text)]))
+        
+        # Send message to Gemini with Google Search enabled
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=history,
+            config=GEMINI_CONFIG
+        )
+        
+        # Extract text from response
+        response_text = response.text
+        
+        # Add assistant response to history
+        history.append(types.Content(role="model", parts=[types.Part(text=response_text)]))
         
         return ChatResponse(
-            response=response.text,
+            response=response_text,
             session_id=session_id
         )
         
