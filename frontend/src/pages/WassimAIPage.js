@@ -206,7 +206,7 @@ const WassimAIPage = () => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
         {messages.map((msg, index) => (
           <div
             key={index}
