@@ -26,7 +26,7 @@ const WassimAIPage = () => {
     if (isPremium && messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: 'Ahla bik ya khoya! 🇩🇿 Ana Wassim, mرشدك الشخصي لعنابة. Wech tehwes t3raf? اسألني على أي حاجة - تاريخ، شواطئ، ماكلة، أسرار البلاد... Ana hna bach nsaadek! 😎',
+        content: 'أهلا بيك يا خويا! 🇩🇿 أنا وسيم، مرشدك الشخصي لعنابة. واش تحب تعرف؟ اسألني على أي حاجة - تاريخ، شواطئ، ماكلة، أسرار البلاد... أنا هنا باش نساعدك! 😎',
         timestamp: new Date()
       }]);
     }
