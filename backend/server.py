@@ -147,19 +147,19 @@ async def get_status_checks():
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses Gemini API with Google Search grounding for real-time info
+    Uses Gemini API with local Annaba knowledge base
     """
     try:
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
         
-        # Get or create chat session with Google Search enabled
+        # Get or create chat session
         if session_id not in chat_sessions:
             chat_sessions[session_id] = LlmChat(
                 api_key=os.environ.get('GEMINI_API_KEY'),
                 session_id=session_id,
                 system_message=WASSIM_SYSTEM_PROMPT
-            ).with_model("gemini", "gemini-2.5-flash").with_google_search()
+            ).with_model("gemini", "gemini-2.5-flash")
         
         chat = chat_sessions[session_id]
         
