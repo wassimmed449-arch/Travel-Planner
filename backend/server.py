@@ -200,7 +200,7 @@ async def wassim_chat(request: ChatRequest):
         history.append(types.Content(role="user", parts=[types.Part(text=message_text)]))
         
         # Send message to Gemini with Google Search enabled
-        response = client.models.generate_content(
+        response = gemini_client.models.generate_content(
             model="gemini-2.0-flash",
             contents=history,
             config=GEMINI_CONFIG
