@@ -9,14 +9,15 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Configure Google Generative AI with search grounding
-genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
+# Configure Google Generative AI client with search grounding
+client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
