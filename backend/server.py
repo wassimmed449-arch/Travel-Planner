@@ -53,6 +53,36 @@ class ChatResponse(BaseModel):
     response: str
     session_id: str
 
+# Fallback responses when API quota is exceeded
+FALLBACK_RESPONSES = {
+    "beach": "يا خويا، عندنا شواطئ ياسر غايا! 🏖️\n\n• **واد بقراط** - شاطئ مخفي، أهدى من سرايدي\n• **عين عشير** - أقل ازدحام من جنان الباي\n• **جنان الباي** - مشهور لكن مزدحم نهاية الأسبوع\n\nروح الصباح بكري للهدوء!",
+    "food": "البوراك؟ روح عند **عم سالم** قريب الميناء! 🥟\n\nيفتح من 6 صباحاً، والله ما تلقى أحسن منو في عنابة كاملة.\n\nالزلابية؟ عند **شاز حميد** في السوق القديم.",
+    "hotel": "للفنادق يا خويا:\n\n• **شيراتون** ⭐⭐⭐⭐⭐ - أحسن مسبح في المدينة\n• **المنتزه سرايدي** - منظر رائع على البحر\n• **صبري** - أرخص مع وصول للشاطئ",
+    "taxi": "تاكسي من المطار؟ 🚕\n\n**ما يفوتش 1000 دج!**\n\nما تخليش السائق يغشك. قولو \"أنا من هنا\" وراح يعطيك السعر الصحيح.",
+    "history": "تاريخ عنابة عريق يا خويا! 📜\n\n• **1295 ق.م** - اسمها \"أوبو\"\n• **الفينيقيين** - سموها \"هيبو\"\n• **الفرنسيين** - سموها \"بون\"\n• **29 جوان 1992** - اغتيال بوضياف في دار الثقافة\n\nالآثار الرومانية في **هيبو ريجيوس** لازم تزورها!",
+    "seraidi": "سرايدي ياسر غايا! 🏔️\n\nروح الصباح بكري أو وقت الغروب - تجنب الحر في الصيف.\n\n**مطعم المنتزه** - كسكسي ممتاز يوم الجمعة!",
+    "default": "يا خويا، أنا وسيم مرشدك لعنابة! 🇩🇿\n\nاسألني عن:\n• 🏖️ الشواطئ\n• 🍽️ الماكلة\n• 🏨 الفنادق\n• 📜 التاريخ\n• 🚕 النقل\n\nواش تحب تعرف؟"
+}
+
+def get_fallback_response(message: str) -> str:
+    """Get a pre-defined response based on keywords in the message"""
+    message_lower = message.lower()
+    
+    if any(word in message_lower for word in ["شاطئ", "شواطئ", "بحر", "beach", "plage", "سباحة"]):
+        return FALLBACK_RESPONSES["beach"]
+    elif any(word in message_lower for word in ["بوراك", "ماكلة", "أكل", "مطعم", "زلابية", "food", "restaurant", "manger"]):
+        return FALLBACK_RESPONSES["food"]
+    elif any(word in message_lower for word in ["فندق", "hotel", "hôtel", "نوم", "إقامة"]):
+        return FALLBACK_RESPONSES["hotel"]
+    elif any(word in message_lower for word in ["تاكسي", "taxi", "مطار", "نقل", "transport"]):
+        return FALLBACK_RESPONSES["taxi"]
+    elif any(word in message_lower for word in ["تاريخ", "history", "histoire", "بوضياف", "قديم", "آثار"]):
+        return FALLBACK_RESPONSES["history"]
+    elif any(word in message_lower for word in ["سرايدي", "seraidi", "جبل"]):
+        return FALLBACK_RESPONSES["seraidi"]
+    else:
+        return FALLBACK_RESPONSES["default"]
+
 # Wassim AI System Prompt
 WASSIM_SYSTEM_PROMPT = """أنت "وسيم"، مرشد محلي ذكي من عنابة، الجزائر.
 
