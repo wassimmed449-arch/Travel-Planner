@@ -255,7 +255,7 @@ const WassimAIPage = () => {
       </div>
 
       {/* Input Area */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 p-4 pb-20">
+      <div className="fixed bottom-16 left-0 right-0 bg-slate-800 border-t border-slate-700 p-4 z-50">
         <div className="flex items-center gap-3 max-w-2xl mx-auto">
           <input
             ref={inputRef}
@@ -267,10 +267,12 @@ const WassimAIPage = () => {
             className="flex-1 bg-slate-700 text-white rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-slate-400"
             dir="auto"
             disabled={isLoading}
+            data-testid="wassim-input"
           />
           <button
             onClick={sendMessage}
             disabled={!inputMessage.trim() || isLoading}
+            data-testid="wassim-send-btn"
             className="w-12 h-12 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl transition-all"
           >
             <Send className="w-5 h-5" />
