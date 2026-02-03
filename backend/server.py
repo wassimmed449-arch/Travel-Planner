@@ -147,23 +147,32 @@ async def get_status_checks():
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses Gemini API with local Annaba knowledge
+    Uses Gemini API with Google Search grounding for real-time info
     """
     try:
         session_id = request.session_id
+        is_first_message = session_id not in greeted_sessions
         
-        # Get or create chat session
+        # Get or create chat session with Google Search enabled
         if session_id not in chat_sessions:
             chat_sessions[session_id] = LlmChat(
                 api_key=os.environ.get('GEMINI_API_KEY'),
                 session_id=session_id,
                 system_message=WASSIM_SYSTEM_PROMPT
-            ).with_model("gemini", "gemini-2.5-flash")
+            ).with_model("gemini", "gemini-2.5-flash").with_google_search()
         
         chat = chat_sessions[session_id]
         
+        # Modify user message to include context about greeting
+        message_text = request.message
+        if not is_first_message:
+            # Add instruction to not repeat greeting
+            message_text = f"[لا تكرر التحية - هذه ليست أول رسالة] {request.message}"
+        else:
+            greeted_sessions.add(session_id)
+        
         # Create user message
-        user_message = UserMessage(text=request.message)
+        user_message = UserMessage(text=message_text)
         
         # Get AI response
         response = await chat.send_message(user_message)
