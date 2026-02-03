@@ -183,10 +183,19 @@ async def wassim_chat(request: ChatRequest):
         )
         
     except Exception as e:
-        logger.error(f"Wassim AI Error: {str(e)}")
-        # Fallback response in case of API error
+        error_msg = str(e)
+        logger.error(f"Wassim AI Error: {error_msg}")
+        
+        # Check for budget/quota errors
+        if "budget" in error_msg.lower() or "quota" in error_msg.lower() or "exceeded" in error_msg.lower():
+            return ChatResponse(
+                response="يا خويا، للأسف الرصيد خلص اليوم! 💫 جرب غداً وراح نكون هنا. في الوقت الحالي، تقدر تستخدم المعلومات الموجودة في التطبيق.",
+                session_id=request.session_id
+            )
+        
+        # Generic fallback response
         return ChatResponse(
-            response="Ya khoya, 3andna mochkla technique! Jarreb mara okhra. 🙏",
+            response="يا خويا، عندنا مشكلة تقنية! 🔧 جرب مرة أخرى من فضلك.",
             session_id=request.session_id
         )
 
