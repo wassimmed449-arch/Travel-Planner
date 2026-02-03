@@ -17,12 +17,12 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Configure Google Generative AI client with search grounding
-client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
+gemini_client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+mongo_client = AsyncIOMotorClient(mongo_url)
+db = mongo_client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
 app = FastAPI()
