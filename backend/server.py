@@ -143,13 +143,6 @@ def get_gemini_model():
         system_instruction=WASSIM_SYSTEM_PROMPT,
         tools="google_search_retrieval"
     )
-"شاطئ عين عشير أهدى من جنان الباي، خاصة نهاية الأسبوع."
-"""
-
-# Store chat sessions in memory (for demo - in production use database)
-chat_sessions = {}
-# Track which sessions have received the initial greeting
-greeted_sessions = set()
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
