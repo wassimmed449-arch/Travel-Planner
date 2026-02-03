@@ -216,7 +216,7 @@ const ShopPage = () => {
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-              <span>{language === 'ar' ? 'وصول كامل لمدة 6 أشهر بسعر منخفض' : language === 'fr' ? 'Accès complet pendant 6 mois à bas prix' : 'Full access for 6 months at low price'}</span>
+              <span>{language === 'ar' ? 'وصول مدى الحياة بسعر منخفض' : language === 'fr' ? 'Accès à vie à bas prix' : 'Lifetime access at low price'}</span>
             </li>
             <li className="flex items-start gap-2">
               <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
