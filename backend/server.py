@@ -169,17 +169,21 @@ async def get_status_checks():
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses Gemini API with Google Search grounding for real-time info
+    Uses Gemini API via Emergent LLM Key with better quota management
     """
     try:
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
         
-        # Get or create chat session history
+        # Get or create chat session with Emergent LLM
         if session_id not in chat_sessions:
-            chat_sessions[session_id] = []
+            chat_sessions[session_id] = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=session_id,
+                system_message=WASSIM_SYSTEM_PROMPT
+            ).with_model("gemini", "gemini-2.0-flash")
         
-        history = chat_sessions[session_id]
+        chat = chat_sessions[session_id]
         
         # Modify user message to include context about greeting
         message_text = request.message
@@ -189,24 +193,12 @@ async def wassim_chat(request: ChatRequest):
         else:
             greeted_sessions.add(session_id)
         
-        # Add user message to history
-        history.append(types.Content(role="user", parts=[types.Part(text=message_text)]))
-        
-        # Send message to Gemini with Google Search enabled
-        response = gemini_client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=history,
-            config=GEMINI_CONFIG
-        )
-        
-        # Extract text from response
-        response_text = response.text
-        
-        # Add assistant response to history
-        history.append(types.Content(role="model", parts=[types.Part(text=response_text)]))
+        # Create user message and send
+        user_message = UserMessage(text=message_text)
+        response = await chat.send_message(user_message)
         
         return ChatResponse(
-            response=response_text,
+            response=response,
             session_id=session_id
         )
         
