@@ -130,16 +130,10 @@ TONE:
 - Keep responses concise but informative.
 """
 
-# Store chat sessions - each session has its own chat history
+# Store chat sessions - each session has its own LlmChat instance
 chat_sessions = {}
 # Track which sessions have received the initial greeting
 greeted_sessions = set()
-
-# Create the Gemini model configuration with Google Search enabled
-GEMINI_CONFIG = types.GenerateContentConfig(
-    system_instruction=WASSIM_SYSTEM_PROMPT,
-    tools=[types.Tool(google_search=types.GoogleSearch())]
-)
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
