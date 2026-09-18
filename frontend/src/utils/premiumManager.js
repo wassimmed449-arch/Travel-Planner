@@ -6,18 +6,35 @@
 const PREMIUM_KEY_PREFIX = 'annaba_premium_v3_';
 const PREMIUM_PRICE_DA = 500;
 
-// MAGIC LINK CODE - The secret activation code
-const MAGIC_LINK_CODE = 'ANNABA-VIP-23-W';
+// MAGIC LINK CODE - read from build-time env var, no hardcoded fallback.
+// NOTE: this is a Create React App frontend. REACT_APP_* vars are compiled
+// into the public JS bundle at build time — this is a source-hygiene/rotation
+// improvement (no key committed to git, can rotate by redeploying), NOT a
+// security fix. The code is still fully readable in the shipped bundle by
+// anyone. Real protection requires server-side validation (Phase 2).
+const MAGIC_LINK_CODE = process.env.REACT_APP_MAGIC_LINK_CODE || '';
 
-// Valid premium keys (including magic link code for manual entry)
-const VALID_PREMIUM_KEYS = [
-  'ANNABA2025ULTIMATE',
-  'WASSIM500KEY',
-  'BONETRAVEL2025',
-  'WSPR0SH0P',
-  'ANNABA6MONTHS',
-  'ANNABA-VIP-23-W', // Magic Link Code (also works manually)
-];
+// Valid premium keys (including magic link code for manual entry), read from
+// a comma-separated build-time env var. Same caveat as above: still public
+// in the bundle, just no longer committed to source.
+const VALID_PREMIUM_KEYS = (process.env.REACT_APP_VALID_PREMIUM_KEYS || '')
+  .split(',')
+  .map((key) => key.trim())
+  .filter(Boolean);
+
+// BaridiMob RIP (bank account number) buyers transfer payment to. This has
+// to be publicly visible in the UI for anyone to pay it, so moving it to an
+// env var is a source-hygiene improvement, not a confidentiality one.
+const PAYMENT_RIP = process.env.REACT_APP_PAYMENT_RIP || '';
+
+if (!MAGIC_LINK_CODE || VALID_PREMIUM_KEYS.length === 0) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'PremiumManager: REACT_APP_MAGIC_LINK_CODE / REACT_APP_VALID_PREMIUM_KEYS ' +
+    'are not set. Premium activation will reject every key until they are ' +
+    'configured (see frontend/.env.example). The rest of the app still works.'
+  );
+}
 
 export const PremiumManager = {
   // Constants exposed for UI
@@ -272,7 +289,7 @@ export const PremiumManager = {
     currency: 'DA',
     accessType: 'LIFETIME',
     recipient: 'Benfernane Mohamed Ouassim',
-    rip: '00799999002810927704',
+    rip: PAYMENT_RIP,
     whatsappNumber: '213552664037',
     whatsappMessageTemplate: {
       ar: 'مرحباً وسيم! لقد قمت بالدفع عبر BaridiMob للحصول على الوصول المميز. إليك إيصال الدفع:',
