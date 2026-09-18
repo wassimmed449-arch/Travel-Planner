@@ -1,76 +1,123 @@
 # Travel Planner Annaba — Roadmap
 
 Five phases, tracked here as a checklist. Update this file's checkboxes as work lands; keep
-`AUDIT.md` as the immutable snapshot of the Phase-0 findings and `CLAUDE.md` as living project
-memory.
+`AUDIT.md` as the audit record and `CLAUDE.md` as living project memory.
 
-## Phase 0 — Secret cleanup and repo hygiene (this PR)
-- [x] Remove the hardcoded `EMERGENT_LLM_KEY` from `backend/server.py`; read it from the
-      environment with no fallback, fail fast at startup if missing.
-- [x] Add `backend/.env.example` and `frontend/.env.example` documenting every required variable.
-- [x] Verify `.gitignore` excludes `.env` files at root and subfolder level; confirm no `.env` is
-      tracked by git.
-- [x] Write `AUDIT.md` (architecture map, Emergent coupling, secrets, content gaps, PWA
-      readiness, dead code) and `CLAUDE.md` (project memory).
-- [ ] Rotate the leaked LLM key on the provider side (Wassim to do manually — not done by this PR).
-- Explicitly **not** touched in Phase 0 (by design — see PR description): `premiumManager.js`
-  validation logic, `ShopPage.js`, `MagicLinkActivator.js`, the hardcoded premium keys, the RIP
-  bank account number, git history.
+## Phase 0: Audit and Cleanup ✅ (this PR)
+- [x] Read all key files (App.js, premiumManager.js, server.py, package.json, requirements.txt,
+      manifest.json, .emergent/summary.txt, memory/PRD.md, .gitignore, both .env.example files).
+- [x] Create `AUDIT.md` documenting current state (architecture, security issues, premium system
+      state, Emergent dependencies, content/PWA status, dead code).
+- [x] Create `CLAUDE.md` with project memory.
+- [x] Move `EMERGENT_LLM_KEY` to an environment variable (`backend/server.py`, no fallback, fails
+      fast at startup if missing).
+- [x] Move `VALID_PREMIUM_KEYS` and `MAGIC_LINK_CODE` to environment variables
+      (`frontend/src/utils/premiumManager.js` → `REACT_APP_VALID_PREMIUM_KEYS`,
+      `REACT_APP_MAGIC_LINK_CODE`). **Read `AUDIT.md` §2 before treating this as a security fix —
+      it is a source-hygiene change only; these values are still fully public in the built
+      frontend bundle. Real confidentiality requires Phase 2.**
+- [x] Move the BaridiMob RIP to an environment variable
+      (`REACT_APP_PAYMENT_RIP`) in `premiumManager.js`. Same caveat as above, plus: it has to be
+      publicly displayed in the UI for buyers to pay it, so this was never a confidentiality
+      issue either way. `v3CompleteData.js`/`completeData.js`'s own hardcoded copies of the RIP
+      were **not** touched (out of scope — not on the premium/payment code path; see `AUDIT.md` §2
+      and §6 for `completeData.js`'s dead-code status).
+- [x] Create `frontend/.env.example` (no real values).
+- [x] Create `backend/.env.example` (no real values).
+- [x] Verify `.gitignore` includes `.env` files at root and subfolder level (found and fixed a
+      bug: the existing `.env.*` pattern also blocked `.env.example` from ever being tracked).
+- [x] Push to branch `claude/peaceful-archimedes-lwy0pq` (this session's harness pins development
+      to this exact branch name — see the PR description for why it isn't
+      `chore/phase-0-audit-and-secrets`) and open the PR.
+- [ ] Rotate the leaked `EMERGENT_LLM_KEY` on the provider side (manual step, provider console —
+      not something this PR can do).
 
-## Phase 1 — Independence from Emergent
-- [ ] Replace `emergentintegrations` (`backend/requirements.txt`, `backend/server.py`) with a
-      direct call to the Google Generative AI SDK (`google-generativeai` / `google-genai`,
-      already partially present in `backend/requirements_google.txt`).
-- [ ] Issue a real Gemini API key (not an Emergent gateway key) and wire it through
-      `GEMINI_API_KEY` in `backend/.env`.
-- [ ] Remove the Emergent-hosted `<script>` tags from `frontend/public/index.html`
-      (`assets.emergent.sh/scripts/emergent-main.js`, the iframe-gated debug-monitor/Tailwind-CDN
-      loader).
-- [ ] Remove `frontend/plugins/visual-edits/` and `frontend/plugins/health-check/` and their
-      conditional wiring in `frontend/craco.config.js`, once no longer edited inside Emergent's UI.
-- [ ] Deploy frontend (static build) and backend (FastAPI) on independently-owned hosting; stop
-      relying on `*.preview.emergentagent.com`.
-- [ ] Decide the fate of `.emergent/`, `memory/`, `test_reports/`, `test_result.md` (delete or
-      archive) once nothing in the workflow depends on Emergent's agent conventions.
+## Phase 1: Emergent Independence (NOT STARTED)
+- [ ] Replace `emergentintegrations` with the `google-generativeai`/`google-genai` SDK directly.
+- [ ] Update `backend/server.py` to call Gemini directly (keep the existing
+      `FALLBACK_RESPONSES`/`get_fallback_response` quota-fallback behavior working through the swap).
+- [ ] Confirm no frontend code imports anything Emergent-specific (audit found none — only the
+      `<script>` tags in `index.html` and the Craco plugins, both handled below).
+- [ ] Remove the `assets.emergent.sh` script tags and the iframe-gated debug-monitor/Tailwind-CDN
+      loader from `frontend/public/index.html`.
+- [ ] Remove `frontend/plugins/visual-edits/` and `frontend/plugins/health-check/`, and their
+      conditional wiring in `frontend/craco.config.js`.
+- [ ] Decide the fate of `.emergent/`, `memory/`, `test_reports/`, `test_result.md` (archive or
+      delete) once nothing in the workflow depends on Emergent's agent conventions.
+- [ ] Update `backend/requirements.txt` (remove `emergentintegrations`; `requirements_google.txt`
+      likely becomes redundant/foldable once this lands — see `AUDIT.md` §6).
+- [ ] Deploy frontend to Vercel.
+- [ ] Deploy backend to Render.
+- [ ] Point `REACT_APP_BACKEND_URL` at the Render deployment; retire the
+      `*.preview.emergentagent.com` URL.
+- [ ] Set up MongoDB Atlas and point `MONGO_URL`/`DB_NAME` at it.
+- [ ] Test the chatbot end-to-end against Gemini directly (both quota-available and
+      quota-exceeded/fallback paths).
 
-## Phase 2 — Server-side premium
-- [ ] Design a MongoDB schema for premium keys: one document per purchase, fields for the key
-      itself, buyer contact, device binding, issued/activated timestamps, revoked flag.
-- [ ] Move key validation from `frontend/src/utils/premiumManager.js` (client-side array check)
-      to a new backend endpoint (e.g. `POST /api/premium/activate`) that checks MongoDB and
-      returns a signed token the frontend stores instead of a raw boolean.
-- [ ] Make activation device-bound (e.g. hash of a stable client identifier) so a single sold key
-      can't be shared/pasted publicly and reused indefinitely.
-- [ ] Add a revocation path (mark a key `revoked: true`, have the frontend re-check periodically
-      or on relevant actions).
-- [ ] Retire `VALID_PREMIUM_KEYS` and `MAGIC_LINK_CODE` from client code entirely once the backend
-      path is live; update `MagicLinkActivator.js` and `ShopPage.js` to call the new endpoint.
-- [ ] Add auth/entitlement check to `POST /api/wassim-chat` so the real LLM backend can't be
-      called by non-premium/non-activated clients directly (currently open to anyone, see
-      `AUDIT.md` §1).
+## Phase 2: Server-Side Premium Validation (NOT STARTED)
+- [ ] Design the MongoDB schema: one document per sold key (key value, buyer contact, device
+      binding identifier, issued/activated timestamps, `revoked` flag).
+- [ ] Create `POST /api/validate-premium` (or similar) on the backend.
+- [ ] Move key-validation logic out of `frontend/src/utils/premiumManager.js` and into that
+      endpoint; the frontend calls it instead of checking a local array/env var.
+- [ ] Implement device binding (UUID-based) so one sold key can't be reused by unlimited devices.
+- [ ] Add a key revocation path (`revoked: true` in Mongo, checked on activation/periodic re-check).
+- [ ] Require the resulting entitlement token on `POST /api/wassim-chat` — today it has **no**
+      auth at all (see `AUDIT.md` §2, item 3); this is the actual security hole the premium system
+      needs to close, not just the key list.
+- [ ] Retire `REACT_APP_MAGIC_LINK_CODE`/`REACT_APP_VALID_PREMIUM_KEYS`/`REACT_APP_PAYMENT_RIP`
+      as client-side validation inputs once the backend path is live (RIP can stay client-side
+      for display purposes — it's not a secret — but validation must not).
+- [ ] Add Stripe integration for direct in-app payment (replacing/supplementing the manual
+      BaridiMob-transfer + WhatsApp-receipt flow).
 
-## Phase 3 — Content completion
-- [ ] Port the full guidebook text into `frontend/src/data/v3CompleteData.js` /
-      `v3EnhancedData.js` / `placesData.js`, replacing any remaining summarized sections.
-- [ ] Resolve the `completeData.js` (dead) vs `v3CompleteData.js` (live) duplication — delete the
-      former once confirmed nothing needs it, after diffing for any content only present there.
-- [ ] Resolve the `wassimProfile.bio` (`placesData.js`, rendered on `/about`) vs
-      `completeTexts.aboutWassim` / `wassimAuthor` (`v3CompleteData.js`, unrendered) duplication —
-      pick one canonical source and wire `AboutPage.js` to it.
-- [ ] Wire up or deliberately delete `completeTexts.finalWord` (currently dead content, never
-      rendered anywhere).
-- [ ] Re-audit for placeholder/fake links as new content is ported in (none were found as of the
-      Phase 0 audit, but re-check after large content edits).
+## Phase 3: Guidebook Completion (NOT STARTED)
+- [ ] Audit which guidebook sections are complete vs. placeholder against the actual source
+      guidebook/Canva document (this repo has no source PDF checked in — get it from Wassim
+      before starting; `AUDIT.md` §5 could only verify data-vs-rendered wiring, not
+      data-vs-source-guidebook completeness).
+- [ ] Port remaining guidebook text from Canva into the data files.
+- [ ] Resolve `completeData.js` (dead) vs `v3CompleteData.js` (live) duplication — diff for any
+      content only present in the dead file before deleting it.
+- [ ] Resolve `wassimProfile.bio` (`placesData.js`, rendered on `/about`) vs
+      `completeTexts.aboutWassim`/`wassimAuthor` (`v3CompleteData.js`, unrendered) duplication —
+      pick one canonical source.
+- [ ] Wire up or deliberately delete `completeTexts.finalWord` (currently dead content).
+- [ ] Fix the stale `ANNABA2025ULTIMATE` placeholder text in `ShopPage.js`'s key-entry input (no
+      longer a valid key as of Phase 0 — see `AUDIT.md` §2, item 6).
+- [ ] Replace any Instagram/link placeholders found during the Phase 3 audit (none were found as
+      of Phase 0 — all current links resolve to real content — but re-check as content is ported).
+- [ ] Add page thumbnails/images where the source guidebook has them.
+- [ ] Implement search across the guidebook content.
 
-## Phase 4 — Google Play (TWA)
-- [ ] Generate a TWA project via Bubblewrap from `frontend/public/manifest.json`.
-- [ ] Fix manifest gaps noted in `AUDIT.md` §5 first: proper padded maskable icon, remove/fix the
-      `/hotels` shortcut (route doesn't exist), validate the `id` field.
-- [ ] Fix the service worker before shipping: add `offline.html`, precache the actual built
-      JS/CSS app shell (not just 4 static files), consider de-duplicating the double SW
-      registration (`index.html` inline script + `serviceWorkerRegistration.js`).
-- [ ] Publish `assetlinks.json` under `frontend/public/.well-known/` for Digital Asset Links
-      verification.
-- [ ] Add a GitHub Actions workflow to build the signed AAB on release/tag.
-- [ ] Submit to Google Play closed testing track with 12 testers for the mandatory 14-day period
-      before production rollout.
+## Phase 4: Google Play Distribution (NOT STARTED)
+- [ ] Fix the manifest/service-worker gaps from `AUDIT.md` §5 first: add a padded maskable icon,
+      remove or fix the `/hotels` shortcut (route doesn't exist), add `offline.html` and precache
+      the real built JS/CSS app shell, consolidate the double service-worker registration.
+- [ ] Build the TWA wrapper using Bubblewrap.
+- [ ] Create Digital Asset Links (`assetlinks.json`) under `frontend/public/.well-known/`.
+- [ ] Set up GitHub Actions for AAB building (no `.github/workflows/` exists yet).
+- [ ] Recruit and prepare 12 testers for closed testing (Google Play requires a minimum 14-day
+      closed test before a production release can be submitted — start this early).
+- [ ] Submit to Google Play Console.
+- [ ] Monitor Play Store review/approval process.
+
+## Safe fixes applied in Phase 0
+1. Moved `EMERGENT_LLM_KEY` from a hardcoded string to an environment variable (backend, fails
+   fast if missing).
+2. Moved `VALID_PREMIUM_KEYS` to an environment variable (frontend — public-bundle caveat applies,
+   see `AUDIT.md` §2).
+3. Moved `MAGIC_LINK_CODE` to an environment variable (same caveat).
+4. Moved the BaridiMob RIP to an environment variable in `premiumManager.js` only (same caveat;
+   the two other hardcoded copies in data files were left alone — out of scope, see above).
+5. Created `.env.example` files for both frontend and backend, no real values.
+6. Verified and fixed `.gitignore` coverage for `.env`, `.env.local`, `.env.*.local` at every depth.
+
+## Explicitly not done in Phase 0 (saved for later phases)
+- Replacing `emergentintegrations` with the Gemini SDK — Phase 1.
+- Moving premium *validation logic* (not just the key values) to the backend — Phase 2.
+- Modifying frontend routing, `ShopPage.js`, `MagicLinkActivator.js`, or adding new features —
+  Phase 3+ (or explicitly out of scope per the original Phase 0 brief).
+- Building the TWA wrapper — Phase 4.
+- Rewriting git history to purge the previously-committed `EMERGENT_LLM_KEY` value — rotate the
+  key on the provider side instead; history rewrites weren't authorized for this PR.

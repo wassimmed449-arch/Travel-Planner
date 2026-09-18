@@ -7,9 +7,53 @@ AI platform and exported to this repo. Long-term goal: cut ties with Emergent, m
 premium tier actually secure, finish porting the guidebook content, and ship to Google Play as
 a Trusted Web Activity (TWA).
 
-Full findings from the initial audit are in `AUDIT.md` (read-only historical record — do not
-edit it after the fact; it reflects the repo state as of the Phase 0 PR). The active roadmap is
-`PLAN.md`.
+Full findings from the initial audit are in `AUDIT.md`. It's updated in place while Phase 0 is
+still open; once that PR merges, treat it as a snapshot of that state and re-audit for anything
+from later phases rather than hand-editing old findings. The active roadmap is `PLAN.md`.
+
+## Key decisions made
+- **LLM provider**: Google Gemini API, chosen for cost, quota headroom, and having a fallback
+  response system already built (`backend/server.py`'s `FALLBACK_RESPONSES`/
+  `get_fallback_response` kick in on quota/budget errors). Direct SDK integration
+  (`google-generativeai`/`google-genai`) replaces `emergentintegrations` in Phase 1.
+- **Hosting**: Vercel (frontend static build) + Render (backend FastAPI) + MongoDB Atlas.
+  Free-tier limits to plan around: Gemini ~1M tokens/day, MongoDB Atlas 512MB, Vercel 100GB
+  bandwidth/month.
+- **Premium model**: per-device activation keys, validated server-side (Phase 2), one key per
+  purchase. No payment gateway integration yet — purchases stay manual (BaridiMob transfer +
+  WhatsApp receipt + Wassim manually issuing a key) until Stripe is added, also in Phase 2.
+- **Language support**: Arabic (Annaba Darja dialect specifically, not generic MSA/Algerian),
+  French, English — see the "Naming / code conventions" section below for how this is encoded in
+  data.
+
+## Security constraints (apply from Phase 0 onward)
+- No new hardcoded keys/tokens in source, client or server side.
+- All secrets in environment variables, documented in `backend/.env.example` /
+  `frontend/.env.example`, never committed as real `.env` files.
+- `.gitignore` must keep blocking `.env`, `.env.local`, `.env.*.local` at every directory depth
+  (verified working as of Phase 0 — see `AUDIT.md` §2).
+- **Frontend caveat that matters for every future secret decision**: this is a Create React App
+  project. Any `REACT_APP_*` env var is compiled into the public JS bundle at `yarn build` time —
+  it is not a runtime secret, it's a text substitution. Moving a value out of hardcoded source and
+  into a `REACT_APP_*` env var is a source-hygiene improvement (not committed to git, rotatable by
+  redeploying), never a confidentiality fix. Anything that must actually stay secret from the end
+  user (real API keys, anything granting write access, etc.) has to live server-side and be
+  fetched through an authenticated backend call — never shipped to the frontend at all, under any
+  variable name. The premium keys and the payment RIP are `REACT_APP_*` env vars today for exactly
+  this reason-limited benefit; see `AUDIT.md` §2 for the full explanation before assuming that
+  move "fixed" anything security-wise.
+
+## Known limitations
+- Gemini free tier: ~1M tokens/day — the existing `FALLBACK_RESPONSES` keyword-matched replies in
+  `backend/server.py` exist specifically to degrade gracefully when this is hit, keep them working
+  through the Phase 1 SDK swap.
+- MongoDB Atlas free tier: 512MB storage cap — relevant once Phase 2 starts writing one document
+  per premium key purchase.
+- Vercel free tier: 100GB bandwidth/month.
+- Google Play: closed testing requires 12 testers for a minimum 14 days before a production
+  release can be submitted — factor this timeline into any Phase 4 launch planning.
+- No payment gateway integration exists yet; all premium purchases are manual until Stripe lands
+  in Phase 2.
 
 ## Stack
 - **Frontend**: React 19 + CRA, built/served via `craco` (see `frontend/craco.config.js`).
@@ -19,8 +63,9 @@ edit it after the fact; it reflects the repo state as of the Phase 0 PR). The ac
   (`POST /api/wassim-chat`, an LLM chat proxy) plus CRA/FastAPI-template boilerplate
   (`/api/status`). LLM calls go through `emergentintegrations` (Emergent's proprietary wrapper) —
   this is slated for removal in Phase 1.
-- **No frontend build-time secrets**: everything shipped to the browser is public. Premium
-  entitlement is currently `localStorage`-based and client-side only (insecure — see Phase 2).
+- **No frontend build-time secrets**: everything shipped to the browser is public, including
+  every `REACT_APP_*` env var (see "Security constraints" below). Premium entitlement is
+  currently `localStorage`-based and client-side only (insecure — see Phase 2).
 
 ## Directory layout
 ```
@@ -67,9 +112,13 @@ if a required var is missing — this is intentional (see Phase 0 changes below)
 ## Required environment variables
 See `backend/.env.example` and `frontend/.env.example` for the full list with inline comments.
 Summary:
-- `backend/.env`: `MONGO_URL`, `DB_NAME`, `GEMINI_API_KEY` (or whatever provider key replaces
-  `EMERGENT_LLM_KEY` post-Phase-1), `CORS_ORIGINS` (comma-separated, no wildcard in prod).
-- `frontend/.env`: `REACT_APP_BACKEND_URL`.
+- `backend/.env`: `MONGO_URL`, `DB_NAME`, `EMERGENT_LLM_KEY` (renamed to a direct
+  `GEMINI_API_KEY` post-Phase-1), `CORS_ORIGINS` (comma-separated, no wildcard in prod).
+- `frontend/.env`: `REACT_APP_BACKEND_URL`, `REACT_APP_MAGIC_LINK_CODE`,
+  `REACT_APP_VALID_PREMIUM_KEYS` (comma-separated), `REACT_APP_PAYMENT_RIP`. Remember: these last
+  three are still fully public in the built bundle (see "Security constraints" above) — without
+  them set, `PremiumManager` just warns and rejects every activation attempt; the rest of the app
+  still works.
 
 Never commit a real `.env` file. Both `frontend/.gitignore` and the root `.gitignore` exclude
 `.env`/`.env.*`; verify with `git status` before committing if you ever hand-edit one.
