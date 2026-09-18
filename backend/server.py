@@ -15,8 +15,13 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Use Emergent LLM Key for better quota management
-EMERGENT_LLM_KEY = "sk-emergent-54eA94c54C05e8e7fD"
+# LLM key for the Wassim AI chat feature. No hardcoded fallback: fail fast at
+# startup instead of shipping with a leaked/shared key baked into the source.
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+if not EMERGENT_LLM_KEY:
+    raise RuntimeError(
+        "EMERGENT_LLM_KEY is not set. Add it to backend/.env (see backend/.env.example)."
+    )
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
