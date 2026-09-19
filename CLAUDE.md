@@ -14,8 +14,15 @@ from later phases rather than hand-editing old findings. The active roadmap is `
 ## Key decisions made
 - **LLM provider**: Google Gemini API, chosen for cost, quota headroom, and having a fallback
   response system already built (`backend/server.py`'s `FALLBACK_RESPONSES`/
-  `get_fallback_response` kick in on quota/budget errors). Direct SDK integration
-  (`google-generativeai`/`google-genai`) replaces `emergentintegrations` in Phase 1.
+  `get_fallback_response` kick in on quota/budget errors). As of Phase 1, `backend/server.py`
+  calls Gemini directly via the `google-genai` SDK (`google.genai.Client(...).aio.chats`) —
+  `emergentintegrations` is gone. Note: the *other* Google SDK, `google-generativeai` (the one
+  originally listed in `requirements.txt` alongside `google-genai`), is now fully deprecated
+  upstream ("all support has ended") — don't reach for it even though some older docs/examples
+  reference it; `google-genai` is the maintained one and the one this repo uses. Also note Google
+  retires Gemini model names periodically (`gemini-2.0-flash` was retired in favor of
+  `gemini-3.6-flash` during Phase 1 development) — the model name is `GEMINI_MODEL` in
+  `backend/.env`, not hardcoded, specifically so this doesn't require a code change again.
 - **Hosting**: Vercel (frontend static build) + Render (backend FastAPI) + MongoDB Atlas.
   Free-tier limits to plan around: Gemini ~1M tokens/day, MongoDB Atlas 512MB, Vercel 100GB
   bandwidth/month.
@@ -61,8 +68,8 @@ from later phases rather than hand-editing old findings. The active roadmap is `
   for maps, `sonner` for toasts.
 - **Backend**: FastAPI + Motor (async MongoDB driver). Currently one real feature endpoint
   (`POST /api/wassim-chat`, an LLM chat proxy) plus CRA/FastAPI-template boilerplate
-  (`/api/status`). LLM calls go through `emergentintegrations` (Emergent's proprietary wrapper) —
-  this is slated for removal in Phase 1.
+  (`/api/status`). LLM calls go directly through the `google-genai` SDK (Gemini) as of Phase 1 —
+  no more `emergentintegrations`.
 - **No frontend build-time secrets**: everything shipped to the browser is public, including
   every `REACT_APP_*` env var (see "Security constraints" below). Premium entitlement is
   currently `localStorage`-based and client-side only (insecure — see Phase 2).
@@ -81,11 +88,12 @@ frontend/
     hooks/, lib/          # small helpers
   public/
     manifest.json, service-worker.js   # PWA config — see AUDIT.md §5 for gaps
-  craco.config.js        # wires optional Emergent-editor dev plugins (frontend/plugins/), off by default
+  craco.config.js        # plain craco config as of Phase 1 — Emergent-editor dev plugins removed
 backend/
   server.py              # FastAPI app, all routes currently live in this one file
-  requirements.txt        # includes emergentintegrations + google-generativeai/google-genai (Phase 1 target)
-.emergent/, memory/, test_reports/, test_result.md   # Emergent platform leftovers — documented, not deleted
+  requirements.txt        # google-genai for Gemini as of Phase 1; no more emergentintegrations
+memory/, test_reports/, test_result.md   # Emergent platform leftovers — documented, not deleted.
+  .emergent/ itself was removed in Phase 1 (job metadata, nothing the app read at runtime)
 ```
 
 ## Running locally
@@ -112,8 +120,9 @@ if a required var is missing — this is intentional (see Phase 0 changes below)
 ## Required environment variables
 See `backend/.env.example` and `frontend/.env.example` for the full list with inline comments.
 Summary:
-- `backend/.env`: `MONGO_URL`, `DB_NAME`, `EMERGENT_LLM_KEY` (renamed to a direct
-  `GEMINI_API_KEY` post-Phase-1), `CORS_ORIGINS` (comma-separated, no wildcard in prod).
+- `backend/.env`: `MONGO_URL`, `DB_NAME`, `GEMINI_API_KEY` (get one at
+  https://aistudio.google.com/apikey), `GEMINI_MODEL` (optional, defaults to
+  `gemini-3.6-flash`), `CORS_ORIGINS` (comma-separated, no wildcard in prod).
 - `frontend/.env`: `REACT_APP_BACKEND_URL`, `REACT_APP_MAGIC_LINK_CODE`,
   `REACT_APP_VALID_PREMIUM_KEYS` (comma-separated), `REACT_APP_PAYMENT_RIP`. Remember: these last
   three are still fully public in the built bundle (see "Security constraints" above) — without
@@ -142,10 +151,12 @@ Never commit a real `.env` file. Both `frontend/.gitignore` and the root `.gitig
 ## Current priorities
 See `PLAN.md` for the full checklist. Five phases, roughly in this order:
 
-1. **Phase 0 — Secret cleanup and repo hygiene** (this PR: remove the hardcoded LLM key,
-   add `.env.example` files, verify `.gitignore`, document what's still insecure).
-2. **Phase 1 — Independence from Emergent**: replace `emergentintegrations` with a direct
-   Gemini SDK call; host frontend + backend ourselves instead of Emergent's preview infra.
+1. **Phase 0 — Secret cleanup and repo hygiene** ✅ done (hardcoded keys moved to env vars,
+   `.env.example` files added, `.gitignore` verified/fixed).
+2. **Phase 1 — Independence from Emergent** — code-level swap done: `backend/server.py` calls
+   Gemini directly via `google-genai`, `.emergent/` and the Emergent Craco plugins/script tags are
+   removed. **Still open**: actually deploying to Vercel/Render/MongoDB Atlas — the app still runs
+   nowhere but this dev sandbox; `REACT_APP_BACKEND_URL` still needs to point somewhere real.
 3. **Phase 2 — Server-side premium**: move key validation to the backend, one key per purchase,
    stored in MongoDB, device-bound, revocable. (Do not attempt piecemeal client-side patches to
    `premiumManager.js` before this phase — it needs a backend model change, not a bigger key list.)

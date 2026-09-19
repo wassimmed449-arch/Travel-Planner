@@ -32,27 +32,48 @@ Five phases, tracked here as a checklist. Update this file's checkboxes as work 
 - [ ] Rotate the leaked `EMERGENT_LLM_KEY` on the provider side (manual step, provider console —
       not something this PR can do).
 
-## Phase 1: Emergent Independence (NOT STARTED)
-- [ ] Replace `emergentintegrations` with the `google-generativeai`/`google-genai` SDK directly.
-- [ ] Update `backend/server.py` to call Gemini directly (keep the existing
-      `FALLBACK_RESPONSES`/`get_fallback_response` quota-fallback behavior working through the swap).
-- [ ] Confirm no frontend code imports anything Emergent-specific (audit found none — only the
-      `<script>` tags in `index.html` and the Craco plugins, both handled below).
-- [ ] Remove the `assets.emergent.sh` script tags and the iframe-gated debug-monitor/Tailwind-CDN
+## Phase 1: Emergent Independence — code swap done, deploy still open
+- [x] Replace `emergentintegrations` with the `google-genai` SDK directly. Note:
+      `google-generativeai` (the *other* Google SDK, also in `requirements.txt` before this phase)
+      turned out to be fully deprecated upstream as of this work ("all support has ended") — went
+      with `google-genai` instead, which is the maintained one and was already a dependency.
+- [x] Update `backend/server.py` to call Gemini directly via
+      `genai.Client(api_key=GEMINI_API_KEY).aio.chats.create(...)` / `chat.send_message(...)`,
+      keeping the existing `FALLBACK_RESPONSES`/`get_fallback_response` quota-fallback behavior,
+      the `WASSIM_SYSTEM_PROMPT` persona, and per-session chat continuity intact.
+- [x] Confirmed no frontend code imports anything Emergent-specific (only the `<script>` tags in
+      `index.html` and the Craco plugins did — both removed below).
+- [x] Removed the `assets.emergent.sh` script tags and the iframe-gated debug-monitor/Tailwind-CDN
       loader from `frontend/public/index.html`.
-- [ ] Remove `frontend/plugins/visual-edits/` and `frontend/plugins/health-check/`, and their
-      conditional wiring in `frontend/craco.config.js`.
-- [ ] Decide the fate of `.emergent/`, `memory/`, `test_reports/`, `test_result.md` (archive or
-      delete) once nothing in the workflow depends on Emergent's agent conventions.
-- [ ] Update `backend/requirements.txt` (remove `emergentintegrations`; `requirements_google.txt`
-      likely becomes redundant/foldable once this lands — see `AUDIT.md` §6).
+- [x] Removed `frontend/plugins/visual-edits/` and `frontend/plugins/health-check/` entirely, and
+      simplified `frontend/craco.config.js` to drop their conditional wiring.
+- [x] Removed `.emergent/` (job metadata only, nothing the app read at runtime). Left `memory/`,
+      `test_reports/`, `test_result.md` alone — not asked for in this pass, and they're referenced
+      as historical context, not runtime coupling.
+- [x] Updated `backend/requirements.txt`: removed `emergentintegrations` and the deprecated
+      `google-generativeai`, kept `google-genai`. Deleted `requirements_google.txt` (its packages
+      were already redundant with `requirements.txt`, and now doubly so).
+- [x] Added `GEMINI_MODEL` as an overridable env var (defaults to `gemini-3.6-flash`) instead of
+      hardcoding the model name — Google retired `gemini-2.0-flash` (the model this project was
+      using) mid-Phase-1, discovered while testing; this makes the next retirement a config change,
+      not a code change.
+- [x] Tested the chatbot end-to-end against Gemini directly, through the actual `server.py`
+      endpoint (FastAPI `TestClient`, not just a standalone script) — real multi-turn response
+      confirmed, correct persona/dialect constraints honored, real local-knowledge details from the
+      system prompt surfaced correctly. Did not separately re-test the quota-exceeded/fallback path
+      in this pass (would need to simulate a 429 from Gemini) — fallback logic itself is unchanged
+      from before, so risk here is low, but it's still unverified against the new SDK's error shape.
 - [ ] Deploy frontend to Vercel.
 - [ ] Deploy backend to Render.
 - [ ] Point `REACT_APP_BACKEND_URL` at the Render deployment; retire the
       `*.preview.emergentagent.com` URL.
 - [ ] Set up MongoDB Atlas and point `MONGO_URL`/`DB_NAME` at it.
-- [ ] Test the chatbot end-to-end against Gemini directly (both quota-available and
-      quota-exceeded/fallback paths).
+- [ ] **Rotate the `GEMINI_API_KEY` used to test this phase.** It was shared in plaintext in the
+      task instructions for this phase, which means it now sits in this conversation's history
+      outside of git (git itself never saw it — it was only ever exported as a shell env var for
+      local testing, never written to a file). Same category of exposure as the leaked
+      `EMERGENT_LLM_KEY` from Phase 0: treat any secret that's ever appeared in plaintext chat as
+      burned and get a fresh one from https://aistudio.google.com/apikey before real deployment.
 
 ## Phase 2: Server-Side Premium Validation (NOT STARTED)
 - [ ] Design the MongoDB schema: one document per sold key (key value, buyer contact, device
