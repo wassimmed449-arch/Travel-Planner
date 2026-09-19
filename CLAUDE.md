@@ -26,9 +26,15 @@ from later phases rather than hand-editing old findings. The active roadmap is `
 - **Hosting**: Vercel (frontend static build) + Render (backend FastAPI) + MongoDB Atlas.
   Free-tier limits to plan around: Gemini ~1M tokens/day, MongoDB Atlas 512MB, Vercel 100GB
   bandwidth/month.
-- **Premium model**: per-device activation keys, validated server-side (Phase 2), one key per
-  purchase. No payment gateway integration yet — purchases stay manual (BaridiMob transfer +
-  WhatsApp receipt + Wassim manually issuing a key) until Stripe is added, also in Phase 2.
+- **Premium model**: per-device activation keys, validated server-side as of Phase 2
+  (`POST /api/activate-premium`, `POST /api/validate-premium` in `backend/server.py`, backed by
+  MongoDB's `premium_keys` collection — one document per key, `device_id` binds on first
+  activation, `revoked` flag for revocation). Existing sold keys are seeded into MongoDB from a
+  backend-only `VALID_PREMIUM_KEYS`/`MAGIC_LINK_CODE` env var at startup (idempotent — never
+  overwrites an already-activated key), so nothing broke for existing customers when validation
+  moved server-side. No payment gateway integration yet — purchases stay manual (BaridiMob
+  transfer + WhatsApp receipt + Wassim manually issuing a key, or now inserting a document into
+  `premium_keys` directly) until Stripe is added.
 - **Language support**: Arabic (Annaba Darja dialect specifically, not generic MSA/Algerian),
   French, English — see the "Naming / code conventions" section below for how this is encoded in
   data.
@@ -46,9 +52,11 @@ from later phases rather than hand-editing old findings. The active roadmap is `
   redeploying), never a confidentiality fix. Anything that must actually stay secret from the end
   user (real API keys, anything granting write access, etc.) has to live server-side and be
   fetched through an authenticated backend call — never shipped to the frontend at all, under any
-  variable name. The premium keys and the payment RIP are `REACT_APP_*` env vars today for exactly
-  this reason-limited benefit; see `AUDIT.md` §2 for the full explanation before assuming that
-  move "fixed" anything security-wise.
+  variable name. **This is exactly what Phase 2 did for the premium keys**: `VALID_PREMIUM_KEYS`
+  and `MAGIC_LINK_CODE` moved from `REACT_APP_*` (public bundle) to backend-only env vars
+  (`backend/.env`, never shipped to the browser) — that's the actual fix `AUDIT.md` §2 said was
+  still needed. `REACT_APP_PAYMENT_RIP` is still a frontend env var and always will be — it's
+  meant to be publicly displayed so buyers can pay it, so there was never anything to fix there.
 
 ## Known limitations
 - Gemini free tier: ~1M tokens/day — the existing `FALLBACK_RESPONSES` keyword-matched replies in
@@ -71,8 +79,10 @@ from later phases rather than hand-editing old findings. The active roadmap is `
   (`/api/status`). LLM calls go directly through the `google-genai` SDK (Gemini) as of Phase 1 —
   no more `emergentintegrations`.
 - **No frontend build-time secrets**: everything shipped to the browser is public, including
-  every `REACT_APP_*` env var (see "Security constraints" below). Premium entitlement is
-  currently `localStorage`-based and client-side only (insecure — see Phase 2).
+  every `REACT_APP_*` env var (see "Security constraints" below). Premium entitlement is now
+  validated server-side as of Phase 2 (`/api/activate-premium`, `/api/validate-premium`);
+  `localStorage` is a cache of the backend's last answer, refreshed on app load via
+  `PremiumManager.refreshPremiumStatus()`, not the source of truth anymore.
 
 ## Directory layout
 ```
@@ -83,7 +93,8 @@ frontend/
     data/                # local "database": placesData.js, v3EnhancedData.js, v3CompleteData.js
                           # (completeData.js is DEAD CODE — nothing imports it, do not add to it)
     components/          # shared UI: Layout, BottomNav, MagicLinkActivator, BrandingFooter, ui/*
-    utils/premiumManager.js   # client-side premium key validation (insecure by design today)
+    utils/premiumManager.js   # as of Phase 2: calls backend for validation, caches result in
+                          # localStorage; getDeviceId() generates/persists the per-browser ID
     contexts/            # LanguageContext (ar/fr/en), ThemeContext
     hooks/, lib/          # small helpers
   public/
@@ -122,12 +133,11 @@ See `backend/.env.example` and `frontend/.env.example` for the full list with in
 Summary:
 - `backend/.env`: `MONGO_URL`, `DB_NAME`, `GEMINI_API_KEY` (get one at
   https://aistudio.google.com/apikey), `GEMINI_MODEL` (optional, defaults to
-  `gemini-3.6-flash`), `CORS_ORIGINS` (comma-separated, no wildcard in prod).
-- `frontend/.env`: `REACT_APP_BACKEND_URL`, `REACT_APP_MAGIC_LINK_CODE`,
-  `REACT_APP_VALID_PREMIUM_KEYS` (comma-separated), `REACT_APP_PAYMENT_RIP`. Remember: these last
-  three are still fully public in the built bundle (see "Security constraints" above) — without
-  them set, `PremiumManager` just warns and rejects every activation attempt; the rest of the app
-  still works.
+  `gemini-3.6-flash`), `CORS_ORIGINS` (comma-separated, no wildcard in prod), `VALID_PREMIUM_KEYS`
+  (comma-separated, seeded into `db.premium_keys` at startup), `MAGIC_LINK_CODE` (same
+  seeding, treated as just another valid key). Both backend-only — never `REACT_APP_*`.
+- `frontend/.env`: `REACT_APP_BACKEND_URL`, `REACT_APP_PAYMENT_RIP` (display-only, see above).
+  No premium-key env vars on the frontend anymore — nothing to configure there for activation.
 
 Never commit a real `.env` file. Both `frontend/.gitignore` and the root `.gitignore` exclude
 `.env`/`.env.*`; verify with `git status` before committing if you ever hand-edit one.
@@ -145,8 +155,12 @@ Never commit a real `.env` file. Both `frontend/.gitignore` and the root `.gitig
 - Tailwind utility classes inline, no CSS modules; shared design tokens come from
   `design_guidelines.json` at the repo root and `tailwind.config.js`.
 - Premium/paid features check `PremiumManager.isPremiumActive()` at the top of the component and
-  render a paywall/lock UI inline rather than redirecting — follow this pattern for any new
-  premium feature until Phase 2 moves entitlement server-side.
+  render a paywall/lock UI inline rather than redirecting — keep this pattern for any new premium
+  UI, it's just reading the local cache now instead of a hardcoded list. For anything that
+  actually spends money/quota (like the Gemini call in `/api/wassim-chat`), don't rely on the
+  frontend check alone — enforce it server-side by checking `device_is_premium(device_id)` in
+  `backend/server.py`, the way `/api/wassim-chat` already does. A frontend-only gate is UX, not
+  enforcement.
 
 ## Current priorities
 See `PLAN.md` for the full checklist. Five phases, roughly in this order:
@@ -157,9 +171,14 @@ See `PLAN.md` for the full checklist. Five phases, roughly in this order:
    Gemini directly via `google-genai`, `.emergent/` and the Emergent Craco plugins/script tags are
    removed. **Still open**: actually deploying to Vercel/Render/MongoDB Atlas — the app still runs
    nowhere but this dev sandbox; `REACT_APP_BACKEND_URL` still needs to point somewhere real.
-3. **Phase 2 — Server-side premium**: move key validation to the backend, one key per purchase,
-   stored in MongoDB, device-bound, revocable. (Do not attempt piecemeal client-side patches to
-   `premiumManager.js` before this phase — it needs a backend model change, not a bigger key list.)
+3. **Phase 2 — Server-side premium** — core validation done: `POST /api/activate-premium` and
+   `POST /api/validate-premium` in `backend/server.py`, keys live in MongoDB's `premium_keys`
+   collection (device-bound, revocable), `premiumManager.js` calls the backend instead of
+   checking a local list, `/api/wassim-chat` now requires an activated `device_id`.
+   **Still open**: Stripe integration (purchases are still fully manual), any admin UI for
+   issuing/revoking keys (today that's a direct MongoDB edit), and re-verifying this against a
+   real deployed MongoDB/backend rather than the sandbox test double (`mongomock-motor`) used to
+   verify the endpoint logic during development.
 4. **Phase 3 — Content completion**: port the full guidebook text into the data files, remove
    any remaining placeholder links, resolve the `completeData.js` vs `v3CompleteData.js` /
    `wassimProfile` vs `wassimAuthor` duplication noted in `AUDIT.md` §4/§6.

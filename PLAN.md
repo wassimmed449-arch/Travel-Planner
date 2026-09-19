@@ -75,22 +75,58 @@ Five phases, tracked here as a checklist. Update this file's checkboxes as work 
       `EMERGENT_LLM_KEY` from Phase 0: treat any secret that's ever appeared in plaintext chat as
       burned and get a fresh one from https://aistudio.google.com/apikey before real deployment.
 
-## Phase 2: Server-Side Premium Validation (NOT STARTED)
-- [ ] Design the MongoDB schema: one document per sold key (key value, buyer contact, device
-      binding identifier, issued/activated timestamps, `revoked` flag).
-- [ ] Create `POST /api/validate-premium` (or similar) on the backend.
-- [ ] Move key-validation logic out of `frontend/src/utils/premiumManager.js` and into that
-      endpoint; the frontend calls it instead of checking a local array/env var.
-- [ ] Implement device binding (UUID-based) so one sold key can't be reused by unlimited devices.
-- [ ] Add a key revocation path (`revoked: true` in Mongo, checked on activation/periodic re-check).
-- [ ] Require the resulting entitlement token on `POST /api/wassim-chat` — today it has **no**
-      auth at all (see `AUDIT.md` §2, item 3); this is the actual security hole the premium system
-      needs to close, not just the key list.
-- [ ] Retire `REACT_APP_MAGIC_LINK_CODE`/`REACT_APP_VALID_PREMIUM_KEYS`/`REACT_APP_PAYMENT_RIP`
-      as client-side validation inputs once the backend path is live (RIP can stay client-side
-      for display purposes — it's not a secret — but validation must not).
+## Phase 2: Server-Side Premium Validation — core validation done, payments/admin still open
+- [x] Designed the MongoDB schema: `db.premium_keys`, one document per key
+      (`_id`/`key`, `device_id` nullable, `revoked` bool, `activated_at` nullable,
+      `created_at`, `source`). No buyer-contact field yet (not asked for; WhatsApp remains
+      the actual buyer record via Wassim's own conversation history) — add one if/when a real
+      admin flow is built.
+- [x] Created `POST /api/validate-premium` (device_id in, `{"isPremium": bool}` out) and
+      `POST /api/activate-premium` (key + device_id in, binds the key to that device on first use).
+      The brief's own sketch only had a check endpoint with nothing to populate the collection it
+      checked — added the activation endpoint because without it, validate-premium could never
+      return true for anyone.
+- [x] Moved key-validation logic out of `frontend/src/utils/premiumManager.js` entirely — it now
+      calls the backend for both activation and periodic revalidation, and no longer holds a key
+      list of any kind (not even from an env var).
+- [x] Implemented device binding: `activate-premium` binds a key to the first `device_id` that
+      redeems it; a different device presenting the same key gets `key_already_used`; the same
+      device re-submitting the same key is idempotent (still succeeds, doesn't re-bind).
+- [x] Added a key revocation path: `revoked: true` on a `premium_keys` doc (set directly in Mongo
+      today, no admin UI yet) is checked on every `activate-premium` and `validate-premium` call,
+      and `premiumManager.refreshPremiumStatus()` (called once per app load, see `App.js`) clears
+      the local cache the moment it sees `isPremium: false` from the backend — verified this
+      actually happens end-to-end in testing (see PR description).
+- [x] Required entitlement on `POST /api/wassim-chat` — it now checks `device_is_premium(device_id)`
+      before making any Gemini call, closing the hole from `AUDIT.md` §2 item 3 (previously
+      callable by anyone). `WassimAIPage.js` now sends `device_id` with every chat request.
+- [x] Retired `REACT_APP_MAGIC_LINK_CODE`/`REACT_APP_VALID_PREMIUM_KEYS` — removed from the
+      frontend entirely (`frontend/.env.example`, `premiumManager.js`); the equivalent values now
+      live backend-only as `VALID_PREMIUM_KEYS`/`MAGIC_LINK_CODE` in `backend/.env`, seeded into
+      MongoDB at startup so existing sold keys keep working. `REACT_APP_PAYMENT_RIP` stays
+      frontend-side as planned (display-only, was never a secret).
 - [ ] Add Stripe integration for direct in-app payment (replacing/supplementing the manual
-      BaridiMob-transfer + WhatsApp-receipt flow).
+      BaridiMob-transfer + WhatsApp-receipt flow) — not started.
+- [ ] Build an actual admin flow for issuing/revoking keys (currently: edit `VALID_PREMIUM_KEYS`
+      and redeploy, or hand-edit a MongoDB document) — not started, fine for current sales volume
+      but won't scale past a handful of manual sales.
+- [x] Made key activation race-safe: `activate-premium` originally did a separate find-then-update
+      (a check-then-act race - two simultaneous activations of the same key could both have won).
+      Rewrote it as one atomic `find_one_and_update` filtered on "unclaimed or already claimed by
+      this exact device", and added a concurrency test (5 simultaneous activation attempts for one
+      key from different devices; exactly the first one keeps it, the rest get
+      `key_already_used`) - passing against `mongomock-motor`.
+- [ ] Re-verify the whole activate → validate → chat-gate flow against a **real** deployed
+      MongoDB + backend. Everything above was verified with `mongomock-motor` (an in-memory Motor
+      test double) via FastAPI's `TestClient`, run because no real MongoDB/Docker was reachable in
+      the dev sandbox this was built in — the endpoint logic itself is fully exercised and correct
+      against that double, including the atomic-claim race guard, but a real Mongo deployment
+      (Atlas, connection pooling, actual concurrent connections, indexes) has never actually run
+      this code. Add a unique index on `premium_keys.device_id` (sparse, since unactivated keys
+      have `device_id: null`) before going live, as defense in depth alongside the atomic query.
+- [ ] No automated test suite exists for this (or anything else) yet — the verification above was
+      throwaway scripts, not `pytest` tests committed to the repo. Worth turning into real tests
+      given how much this endpoint now guards (LLM spend, paid feature access).
 
 ## Phase 3: Guidebook Completion (NOT STARTED)
 - [ ] Audit which guidebook sections are complete vs. placeholder against the actual source
