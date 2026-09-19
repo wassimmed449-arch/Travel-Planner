@@ -53,7 +53,8 @@ const WassimAIPage = () => {
         body: JSON.stringify({
           message: inputMessage,
           session_id: sessionId,
-          language: 'ar'
+          language: 'ar',
+          device_id: PremiumManager.getDeviceId()
         })
       });
 

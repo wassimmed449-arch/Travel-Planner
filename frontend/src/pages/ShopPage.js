@@ -30,8 +30,8 @@ const ShopPage = () => {
     window.open(`https://wa.me/${paymentInfo.whatsappNumber}?text=${message}`, '_blank');
   };
 
-  const handleActivateKey = () => {
-    const result = PremiumManager.activatePremiumKey(keyInput);
+  const handleActivateKey = async () => {
+    const result = await PremiumManager.activatePremiumKey(keyInput);
     setActivationResult(result);
     
     if (result.success) {

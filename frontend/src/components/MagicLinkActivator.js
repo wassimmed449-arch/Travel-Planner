@@ -6,12 +6,12 @@ import PremiumManager from '../utils/premiumManager';
 const MagicLinkActivator = () => {
   const [searchParams] = useSearchParams();
 
-  const handleMagicLink = useCallback(() => {
+  const handleMagicLink = useCallback(async () => {
     const activationCode = searchParams.get('activate');
-    
+
     if (activationCode) {
-      const result = PremiumManager.activateMagicLink(activationCode);
-      
+      const result = await PremiumManager.activateMagicLink(activationCode);
+
       if (result.success) {
         // Show success toast
         toast.success('✅ Lifetime Premium Activated Successfully!', {

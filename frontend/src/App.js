@@ -1,4 +1,5 @@
 import "@/App.css";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
@@ -6,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Layout from "@/components/Layout";
 import ScrollToTop from "@/components/ScrollToTop";
 import MagicLinkActivator from "@/components/MagicLinkActivator";
+import PremiumManager from "@/utils/premiumManager";
 import HomePage from "@/pages/HomePage";
 import ExplorePage from "@/pages/ExplorePage";
 import PlansPage from "@/pages/PlansPage";
@@ -30,6 +32,15 @@ import IntroductionPage from "@/pages/IntroductionPage";
 import WassimAIPage from "@/pages/WassimAIPage";
 
 function App() {
+  useEffect(() => {
+    // Resync the local premium cache with the backend once per app load
+    // (Phase 2: the backend is now the source of truth, not the local key
+    // list). Page-level isPremiumActive() reads stay synchronous/cached for
+    // instant UI - this just keeps that cache honest, e.g. clearing it if a
+    // key gets revoked server-side.
+    PremiumManager.refreshPremiumStatus();
+  }, []);
+
   return (
     <LanguageProvider>
       <ThemeProvider>

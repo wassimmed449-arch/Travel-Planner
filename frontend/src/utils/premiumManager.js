@@ -2,39 +2,106 @@
 // PREMIUM ACCESS SYSTEM - V3.0 ULTIMATE - LIFETIME ACCESS
 // Manual BaridiMob Payment + WhatsApp Receipt + Key Validation + Magic Link
 // ================================================================================================
+// Phase 2: key validation happens on the backend (/api/activate-premium,
+// /api/validate-premium), device-bound, backed by MongoDB. This file no
+// longer holds the valid-key list at all - see backend/server.py and
+// backend/.env.example (VALID_PREMIUM_KEYS, MAGIC_LINK_CODE, backend-only).
+// localStorage is now only a client-side CACHE of what the backend already
+// confirmed, refreshed via refreshPremiumStatus() - it is not the source of
+// truth anymore, and a revoked key's cache gets cleared on next refresh.
 
 const PREMIUM_KEY_PREFIX = 'annaba_premium_v3_';
 const PREMIUM_PRICE_DA = 500;
-
-// MAGIC LINK CODE - read from build-time env var, no hardcoded fallback.
-// NOTE: this is a Create React App frontend. REACT_APP_* vars are compiled
-// into the public JS bundle at build time — this is a source-hygiene/rotation
-// improvement (no key committed to git, can rotate by redeploying), NOT a
-// security fix. The code is still fully readable in the shipped bundle by
-// anyone. Real protection requires server-side validation (Phase 2).
-const MAGIC_LINK_CODE = process.env.REACT_APP_MAGIC_LINK_CODE || '';
-
-// Valid premium keys (including magic link code for manual entry), read from
-// a comma-separated build-time env var. Same caveat as above: still public
-// in the bundle, just no longer committed to source.
-const VALID_PREMIUM_KEYS = (process.env.REACT_APP_VALID_PREMIUM_KEYS || '')
-  .split(',')
-  .map((key) => key.trim())
-  .filter(Boolean);
+const DEVICE_ID_KEY = `${PREMIUM_KEY_PREFIX}device_id`;
 
 // BaridiMob RIP (bank account number) buyers transfer payment to. This has
 // to be publicly visible in the UI for anyone to pay it, so moving it to an
 // env var is a source-hygiene improvement, not a confidentiality one.
 const PAYMENT_RIP = process.env.REACT_APP_PAYMENT_RIP || '';
 
-if (!MAGIC_LINK_CODE || VALID_PREMIUM_KEYS.length === 0) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    'PremiumManager: REACT_APP_MAGIC_LINK_CODE / REACT_APP_VALID_PREMIUM_KEYS ' +
-    'are not set. Premium activation will reject every key until they are ' +
-    'configured (see frontend/.env.example). The rest of the app still works.'
-  );
-}
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+// Stable per-browser identifier used to bind a premium key to "a device".
+// Not a hardware fingerprint - it's a random ID persisted in localStorage,
+// which is what "device-bound" means for a web app without invasive
+// fingerprinting. Clearing site data resets it (same tradeoff as any
+// localStorage-based identity).
+const getDeviceId = () => {
+  let deviceId = localStorage.getItem(DEVICE_ID_KEY);
+  if (!deviceId) {
+    deviceId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `dev-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem(DEVICE_ID_KEY, deviceId);
+  }
+  return deviceId;
+};
+
+const ACTIVATION_ERROR_MESSAGES = {
+  invalid_key: {
+    ar: 'المفتاح غير صحيح. تأكد من إدخاله بشكل صحيح.',
+    fr: 'Clé invalide. Vérifiez que vous l\'avez saisie correctement.',
+    en: 'Invalid key. Make sure you entered it correctly.'
+  },
+  revoked: {
+    ar: 'هذا المفتاح تم إلغاؤه. تواصل مع وسيم عبر واتساب.',
+    fr: 'Cette clé a été révoquée. Contactez Wassim sur WhatsApp.',
+    en: 'This key has been revoked. Contact Wassim on WhatsApp.'
+  },
+  key_already_used: {
+    ar: 'هذا المفتاح مستعمل من جهاز آخر بالفعل.',
+    fr: 'Cette clé est déjà utilisée sur un autre appareil.',
+    en: 'This key is already active on another device.'
+  },
+  network_error: {
+    ar: 'تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.',
+    fr: 'Impossible de contacter le serveur. Vérifiez votre connexion et réessayez.',
+    en: 'Could not reach the server. Check your connection and try again.'
+  },
+  server_error: {
+    ar: 'حدث خطأ في الخادم. حاول مرة أخرى لاحقاً.',
+    fr: 'Erreur du serveur. Réessayez plus tard.',
+    en: 'Server error. Please try again later.'
+  }
+};
+
+const SUCCESS_MESSAGE = {
+  ar: 'تم تفعيل الوصول المميز مدى الحياة بنجاح! 🎉',
+  fr: 'Accès Premium à vie activé avec succès! 🎉',
+  en: 'Lifetime Premium Access activated successfully! 🎉'
+};
+
+const persistActivation = (key) => {
+  const now = new Date();
+  localStorage.setItem(`${PREMIUM_KEY_PREFIX}access`, JSON.stringify({
+    activated: now.toISOString(),
+    lifetime: true,
+    key,
+    version: '3.0-LIFETIME'
+  }));
+};
+
+const clearActivation = () => {
+  localStorage.removeItem(`${PREMIUM_KEY_PREFIX}access`);
+};
+
+// Calls the backend to validate+bind a key. Never trusts a local key list -
+// there isn't one anymore.
+const callActivateEndpoint = async (key) => {
+  try {
+    const response = await fetch(`${API_URL}/api/activate-premium`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, device_id: getDeviceId() }),
+    });
+    if (!response.ok) {
+      return { success: false, error: 'server_error' };
+    }
+    return await response.json();
+  } catch {
+    return { success: false, error: 'network_error' };
+  }
+};
 
 export const PremiumManager = {
   // Constants exposed for UI
@@ -42,19 +109,23 @@ export const PremiumManager = {
   CURRENCY: 'DA',
   ACCESS_TYPE: 'LIFETIME', // Changed from months to lifetime
 
-  // Check if user has active premium access (LIFETIME = no expiry check)
+  getDeviceId,
+
+  // Fast, synchronous, local-cache read - used for instant UI gating on
+  // page mount. This is a cache of the backend's last-known answer, not the
+  // source of truth; call refreshPremiumStatus() to resync it.
   isPremiumActive: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return false;
-    
+
     try {
       const data = JSON.parse(premiumData);
-      
+
       // Lifetime access - just check if activated
       if (data.lifetime === true) {
         return true;
       }
-      
+
       // Legacy support - check expiry for old activations
       const expiryDate = new Date(data.expiryDate);
       const now = new Date();
@@ -64,80 +135,68 @@ export const PremiumManager = {
     }
   },
 
+  // Re-checks this device's premium status against the backend and updates
+  // the local cache accordingly (clears it if the backend says no, e.g. a
+  // revoked key). Call once on app load. On network failure, keeps whatever
+  // the local cache already said rather than locking out a legitimate user
+  // who's just briefly offline.
+  refreshPremiumStatus: async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/validate-premium`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_id: getDeviceId() }),
+      });
+      if (!response.ok) {
+        return PremiumManager.isPremiumActive();
+      }
+      const data = await response.json();
+      if (data.isPremium) {
+        persistActivation('server-verified');
+      } else {
+        clearActivation();
+      }
+      return !!data.isPremium;
+    } catch {
+      return PremiumManager.isPremiumActive();
+    }
+  },
+
   // Activate premium via Magic Link
-  activateMagicLink: (code) => {
+  activateMagicLink: async (code) => {
     const normalizedCode = code.toUpperCase().trim();
-    
-    if (normalizedCode !== MAGIC_LINK_CODE) {
+    const result = await callActivateEndpoint(normalizedCode);
+
+    if (!result.success) {
       return { success: false };
     }
 
-    const now = new Date();
-    const premiumData = {
-      activated: now.toISOString(),
-      lifetime: true, // LIFETIME ACCESS
-      key: 'MAGIC_LINK',
-      version: '3.0-LIFETIME'
-    };
-
-    localStorage.setItem(`${PREMIUM_KEY_PREFIX}access`, JSON.stringify(premiumData));
-    
-    return { 
-      success: true, 
-      message: {
-        ar: 'تم تفعيل الوصول المميز مدى الحياة بنجاح! 🎉',
-        fr: 'Accès Premium à vie activé avec succès! 🎉',
-        en: 'Lifetime Premium Access activated successfully! 🎉'
-      }
-    };
+    persistActivation('MAGIC_LINK');
+    return { success: true, message: SUCCESS_MESSAGE };
   },
 
   // Activate premium with a key (manual entry)
-  activatePremiumKey: (key) => {
+  activatePremiumKey: async (key) => {
     const normalizedKey = key.toUpperCase().trim().replace(/\s+/g, '');
-    
-    // Check if it's the magic link code
-    if (normalizedKey === MAGIC_LINK_CODE.replace(/-/g, '') || normalizedKey === MAGIC_LINK_CODE) {
-      return PremiumManager.activateMagicLink(MAGIC_LINK_CODE);
-    }
-    
-    if (!VALID_PREMIUM_KEYS.includes(normalizedKey)) {
-      return { 
-        success: false, 
-        error: 'invalid_key',
-        message: { 
-          ar: 'المفتاح غير صحيح. تأكد من إدخاله بشكل صحيح.',
-          fr: 'Clé invalide. Vérifiez que vous l\'avez saisie correctement.',
-          en: 'Invalid key. Make sure you entered it correctly.'
-        }
+    const result = await callActivateEndpoint(normalizedKey);
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || 'invalid_key',
+        message: ACTIVATION_ERROR_MESSAGES[result.error] || ACTIVATION_ERROR_MESSAGES.invalid_key,
       };
     }
 
-    const now = new Date();
-    const premiumData = {
-      activated: now.toISOString(),
-      lifetime: true, // All keys now give LIFETIME access
-      key: normalizedKey,
-      version: '3.0-LIFETIME'
-    };
-
-    localStorage.setItem(`${PREMIUM_KEY_PREFIX}access`, JSON.stringify(premiumData));
-    
-    return { 
-      success: true, 
-      message: {
-        ar: 'تم تفعيل الوصول المميز مدى الحياة بنجاح! 🎉',
-        fr: 'Accès Premium à vie activé avec succès! 🎉',
-        en: 'Lifetime Premium Access activated successfully! 🎉'
-      }
-    };
+    persistActivation(normalizedKey);
+    return { success: true, message: SUCCESS_MESSAGE };
   },
 
   // Get premium status text
   getStatusText: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return null;
-    
+
     try {
       const data = JSON.parse(premiumData);
       if (data.lifetime) {
@@ -157,13 +216,13 @@ export const PremiumManager = {
   getDaysRemaining: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return 0;
-    
+
     try {
       const data = JSON.parse(premiumData);
       if (data.lifetime) {
         return Infinity; // Lifetime access
       }
-      
+
       // Legacy support
       const expiryDate = new Date(data.expiryDate);
       const now = new Date();
@@ -179,7 +238,7 @@ export const PremiumManager = {
   getActivationDate: () => {
     const premiumData = localStorage.getItem(`${PREMIUM_KEY_PREFIX}access`);
     if (!premiumData) return null;
-    
+
     try {
       const data = JSON.parse(premiumData);
       return new Date(data.activated);
@@ -195,90 +254,90 @@ export const PremiumManager = {
       icon: '🗺️',
       premiumOnly: false,
       highlight: true,
-      name: { 
-        ar: 'الخريطة الذكية التفاعلية', 
-        fr: 'Carte Interactive Intelligente', 
-        en: 'Smart Interactive Map' 
+      name: {
+        ar: 'الخريطة الذكية التفاعلية',
+        fr: 'Carte Interactive Intelligente',
+        en: 'Smart Interactive Map'
       },
-      description: { 
-        ar: 'تنقل سهل مع دبابيس وتوجيهات Google Maps', 
-        fr: 'Navigation facile avec pins et directions Google Maps', 
-        en: 'Easy navigation with pins and Google Maps directions' 
+      description: {
+        ar: 'تنقل سهل مع دبابيس وتوجيهات Google Maps',
+        fr: 'Navigation facile avec pins et directions Google Maps',
+        en: 'Easy navigation with pins and Google Maps directions'
       }
     },
     {
       id: 'pdf-download',
       icon: '📚',
       premiumOnly: true,
-      name: { 
-        ar: 'تحميل الكتاب الكامل PDF', 
-        fr: 'Télécharger le Livre Complet PDF', 
-        en: 'Full PDF Guidebook Download' 
+      name: {
+        ar: 'تحميل الكتاب الكامل PDF',
+        fr: 'Télécharger le Livre Complet PDF',
+        en: 'Full PDF Guidebook Download'
       },
-      description: { 
-        ar: 'دليل السفر الكامل V3 بصيغة PDF للقراءة أوفلاين', 
-        fr: 'Guide de voyage complet V3 en PDF pour lecture hors-ligne', 
-        en: 'Complete V3 travel guide in PDF for offline reading' 
+      description: {
+        ar: 'دليل السفر الكامل V3 بصيغة PDF للقراءة أوفلاين',
+        fr: 'Guide de voyage complet V3 en PDF pour lecture hors-ligne',
+        en: 'Complete V3 travel guide in PDF for offline reading'
       }
     },
     {
       id: 'wassim-super-bot',
       icon: '🤖',
       premiumOnly: true,
-      name: { 
-        ar: 'بوت وسيم الخارق', 
-        fr: 'Wassim Super-Bot', 
-        en: 'Wassim Super-Bot (Personal Assistant)' 
+      name: {
+        ar: 'بوت وسيم الخارق',
+        fr: 'Wassim Super-Bot',
+        en: 'Wassim Super-Bot (Personal Assistant)'
       },
-      description: { 
-        ar: 'مساعد شخصي بأسلوب وسيم الشبابي المرح مع إيموجي ونصائح سرية 😎', 
-        fr: 'Assistant personnel dans le style jeune et amusant de Wassim avec emojis et conseils secrets 😎', 
-        en: 'Personal assistant in Wassim\'s youthful fun style with emojis and secret tips 😎' 
+      description: {
+        ar: 'مساعد شخصي بأسلوب وسيم الشبابي المرح مع إيموجي ونصائح سرية 😎',
+        fr: 'Assistant personnel dans le style jeune et amusant de Wassim avec emojis et conseils secrets 😎',
+        en: 'Personal assistant in Wassim\'s youthful fun style with emojis and secret tips 😎'
       }
     },
     {
       id: 'deep-secrets',
       icon: '🔮',
       premiumOnly: true,
-      name: { 
-        ar: 'أسرار محلية عميقة', 
-        fr: 'Secrets Locaux Profonds', 
-        en: 'Deep Local Secrets' 
+      name: {
+        ar: 'أسرار محلية عميقة',
+        fr: 'Secrets Locaux Profonds',
+        en: 'Deep Local Secrets'
       },
-      description: { 
-        ar: 'تاريخ المدينة الكامل والأماكن المخفية التي لا يعرفها السياح', 
-        fr: 'Histoire complète de la ville et lieux cachés inconnus des touristes', 
-        en: 'Full city history and hidden spots tourists don\'t know' 
+      description: {
+        ar: 'تاريخ المدينة الكامل والأماكن المخفية التي لا يعرفها السياح',
+        fr: 'Histoire complète de la ville et lieux cachés inconnus des touristes',
+        en: 'Full city history and hidden spots tourists don\'t know'
       }
     },
     {
       id: 'hidden-gems',
       icon: '💎',
       premiumOnly: true,
-      name: { 
-        ar: 'جواهر مخفية', 
-        fr: 'Joyaux cachés', 
-        en: 'Hidden Gems' 
+      name: {
+        ar: 'جواهر مخفية',
+        fr: 'Joyaux cachés',
+        en: 'Hidden Gems'
       },
-      description: { 
-        ar: 'أماكن سرية لا يعرفها إلا وسيم وأصدقاؤه', 
-        fr: 'Lieux secrets connus seulement de Wassim et ses amis', 
-        en: 'Secret places known only to Wassim and his friends' 
+      description: {
+        ar: 'أماكن سرية لا يعرفها إلا وسيم وأصدقاؤه',
+        fr: 'Lieux secrets connus seulement de Wassim et ses amis',
+        en: 'Secret places known only to Wassim and his friends'
       }
     },
     {
       id: 'priority-support',
       icon: '⚡',
       premiumOnly: true,
-      name: { 
-        ar: 'دعم فوري من وسيم', 
-        fr: 'Support immédiat de Wassim', 
-        en: 'Immediate Support from Wassim' 
+      name: {
+        ar: 'دعم فوري من وسيم',
+        fr: 'Support immédiat de Wassim',
+        en: 'Immediate Support from Wassim'
       },
-      description: { 
-        ar: 'تواصل مباشر عبر واتساب مع وسيم شخصياً', 
-        fr: 'Contact direct via WhatsApp avec Wassim personnellement', 
-        en: 'Direct contact via WhatsApp with Wassim personally' 
+      description: {
+        ar: 'تواصل مباشر عبر واتساب مع وسيم شخصياً',
+        fr: 'Contact direct via WhatsApp avec Wassim personnellement',
+        en: 'Direct contact via WhatsApp with Wassim personally'
       }
     }
   ],
@@ -298,9 +357,10 @@ export const PremiumManager = {
     }
   }),
 
-  // Revoke premium (for testing)
+  // Revoke premium (for testing) - clears the local cache only. To actually
+  // revoke a key server-side, set revoked: true on its db.premium_keys doc.
   revokePremium: () => {
-    localStorage.removeItem(`${PREMIUM_KEY_PREFIX}access`);
+    clearActivation();
   }
 };
 
