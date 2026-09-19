@@ -9,7 +9,8 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from google import genai
+from google.genai import types as genai_types
 
 
 ROOT_DIR = Path(__file__).parent
@@ -17,11 +18,17 @@ load_dotenv(ROOT_DIR / '.env')
 
 # LLM key for the Wassim AI chat feature. No hardcoded fallback: fail fast at
 # startup instead of shipping with a leaked/shared key baked into the source.
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
-if not EMERGENT_LLM_KEY:
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
     raise RuntimeError(
-        "EMERGENT_LLM_KEY is not set. Add it to backend/.env (see backend/.env.example)."
+        "GEMINI_API_KEY is not set. Add it to backend/.env (see backend/.env.example)."
     )
+# Overridable so a future model retirement (Google does this periodically -
+# gemini-2.0-flash was already retired in favor of gemini-3.6-flash as of this
+# writing) is a redeploy, not a code change.
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-3.6-flash')
+
+gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -135,7 +142,7 @@ TONE:
 - Keep responses concise but informative.
 """
 
-# Store chat sessions - each session has its own LlmChat instance
+# Store chat sessions - each session has its own Gemini chat instance
 chat_sessions = {}
 # Track which sessions have received the initial greeting
 greeted_sessions = set()
@@ -174,22 +181,23 @@ async def get_status_checks():
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses Gemini API via Emergent LLM Key with better quota management
+    Uses the Gemini API directly via the google-genai SDK.
     """
     try:
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
-        
-        # Get or create chat session with Emergent LLM
+
+        # Get or create chat session with Gemini
         if session_id not in chat_sessions:
-            chat_sessions[session_id] = LlmChat(
-                api_key=EMERGENT_LLM_KEY,
-                session_id=session_id,
-                system_message=WASSIM_SYSTEM_PROMPT
-            ).with_model("gemini", "gemini-2.0-flash")
-        
+            chat_sessions[session_id] = gemini_client.aio.chats.create(
+                model=GEMINI_MODEL,
+                config=genai_types.GenerateContentConfig(
+                    system_instruction=WASSIM_SYSTEM_PROMPT
+                ),
+            )
+
         chat = chat_sessions[session_id]
-        
+
         # Modify user message to include context about greeting
         message_text = request.message
         if not is_first_message:
@@ -197,13 +205,11 @@ async def wassim_chat(request: ChatRequest):
             message_text = f"[هذه ليست أول رسالة - لا تكرر التحية، أجب مباشرة] {request.message}"
         else:
             greeted_sessions.add(session_id)
-        
-        # Create user message and send
-        user_message = UserMessage(text=message_text)
-        response = await chat.send_message(user_message)
-        
+
+        response = await chat.send_message(message_text)
+
         return ChatResponse(
-            response=response,
+            response=response.text,
             session_id=session_id
         )
         
