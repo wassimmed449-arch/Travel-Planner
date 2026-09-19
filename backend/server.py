@@ -63,10 +63,22 @@ class ChatRequest(BaseModel):
     message: str
     session_id: str
     language: Optional[str] = "ar"  # ar, fr, en
+    device_id: Optional[str] = None
 
 class ChatResponse(BaseModel):
     response: str
     session_id: str
+
+# Premium activation models
+class PremiumActivateRequest(BaseModel):
+    key: str
+    device_id: str
+
+class PremiumStatusRequest(BaseModel):
+    device_id: str
+
+class PremiumStatusResponse(BaseModel):
+    isPremium: bool
 
 # Fallback responses when API quota is exceeded
 FALLBACK_RESPONSES = {
@@ -176,13 +188,114 @@ async def get_status_checks():
     
     return status_checks
 
+# ================================================================================================
+# SERVER-SIDE PREMIUM VALIDATION
+# Keys live only in MongoDB now, seeded once at startup from a backend-only
+# env var. VALID_PREMIUM_KEYS / MAGIC_LINK_CODE below are never shipped to the
+# frontend (no REACT_APP_ prefix) - this is the actual fix for the exposure
+# documented in AUDIT.md §2, not the earlier REACT_APP_* env var move, which
+# was source hygiene only.
+# ================================================================================================
+
+async def seed_premium_keys():
+    """Seed db.premium_keys from env vars so existing sold keys keep working
+    after moving validation server-side. Idempotent: only inserts keys that
+    don't already exist, never overwrites an already-activated key's
+    device binding or revoked state on redeploy."""
+    raw_keys = os.environ.get('VALID_PREMIUM_KEYS', '')
+    keys = {k.strip().upper() for k in raw_keys.split(',') if k.strip()}
+
+    magic_code = os.environ.get('MAGIC_LINK_CODE', '').strip().upper()
+    if magic_code:
+        keys.add(magic_code)
+
+    for key in keys:
+        await db.premium_keys.update_one(
+            {"_id": key},
+            {"$setOnInsert": {
+                "key": key,
+                "device_id": None,
+                "revoked": False,
+                "activated_at": None,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "source": "env_seed",
+            }},
+            upsert=True,
+        )
+
+@app.on_event("startup")
+async def startup_seed_premium_keys():
+    await seed_premium_keys()
+
+async def device_is_premium(device_id: Optional[str]) -> bool:
+    if not device_id:
+        return False
+    doc = await db.premium_keys.find_one({"device_id": device_id, "revoked": False})
+    return doc is not None
+
+@api_router.post("/activate-premium")
+async def activate_premium(request: PremiumActivateRequest):
+    """
+    Validate a key + bind it to a device. One key can only ever be bound to
+    one device_id (first activation wins); re-activating from the *same*
+    device is idempotent. This is what makes the key "one per purchase" -
+    the frontend can no longer just accept any string from a hardcoded list.
+
+    The claim is done as a single atomic find_one_and_update filtered on
+    "unclaimed or already claimed by this device", not a separate
+    find-then-update, so two simultaneous activation requests for the same
+    key can't both win.
+    """
+    normalized_key = request.key.strip().upper()
+
+    claimed = await db.premium_keys.find_one_and_update(
+        {
+            "_id": normalized_key,
+            "revoked": False,
+            "$or": [{"device_id": None}, {"device_id": request.device_id}],
+        },
+        {"$set": {
+            "device_id": request.device_id,
+            "activated_at": datetime.now(timezone.utc).isoformat(),
+        }},
+    )
+
+    if claimed:
+        return {"success": True, "isPremium": True}
+
+    # Atomic claim failed - look the key up separately just to report why.
+    existing = await db.premium_keys.find_one({"_id": normalized_key})
+    if not existing:
+        return {"success": False, "isPremium": False, "error": "invalid_key"}
+    if existing.get("revoked"):
+        return {"success": False, "isPremium": False, "error": "revoked"}
+    return {"success": False, "isPremium": False, "error": "key_already_used"}
+
+@api_router.post("/validate-premium", response_model=PremiumStatusResponse)
+async def validate_premium(request: PremiumStatusRequest):
+    return PremiumStatusResponse(isPremium=await device_is_premium(request.device_id))
+
 # Wassim AI Super Bot Chat Endpoint
 @api_router.post("/wassim-chat", response_model=ChatResponse)
 async def wassim_chat(request: ChatRequest):
     """
     Wassim AI Super Bot - Premium Feature
-    Uses the Gemini API directly via the google-genai SDK.
+    Uses the Gemini API directly via the google-genai SDK. Requires an
+    activated device_id - previously this endpoint was callable by anyone
+    regardless of premium status (see AUDIT.md §2, item 3); that's what this
+    check closes.
     """
+    if not await device_is_premium(request.device_id):
+        return ChatResponse(
+            response=(
+                "🔒 بوت وسيم الخارق ميزة مميزة! فعّل الوصول المميز من صفحة "
+                "المتجر باش تقدر تستعملو.\n\n"
+                "🔒 Wassim Super-Bot is a premium feature. Activate premium "
+                "access from the Shop page to use it."
+            ),
+            session_id=request.session_id
+        )
+
     try:
         session_id = request.session_id
         is_first_message = session_id not in greeted_sessions
